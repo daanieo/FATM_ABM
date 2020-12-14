@@ -1,3 +1,13 @@
+# # The script:
+# 1. Defines input parameters
+# 2. Creates permutation of input parameters
+# 3. Defines observables
+# 4. Sets model path and further input (such as runtime)
+# 5. Creates experiment XML files to feed to GAMA Headless
+# 6. Fetches results from GAMA Headless
+# 7. Stores in data.frame
+# 8. Exports to csv
+
 # Makes use of the following libraries
 library(gamar)
 library(XML)
