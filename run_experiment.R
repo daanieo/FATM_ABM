@@ -16,7 +16,7 @@ library(XML)
 setup_gama("/home/daan/GAMA")
 
 # define to be researched parametres as c(min,max,stepsize) CHECK IF (max-min)%stepsize == 0 !
-params = data.frame("alpha"=c(0.1,0.3,0.1),"beta"=c(0.9,1.0,0.1))
+params = data.frame("alpha"=c(0.1,0.1,0.1),"beta"=c(1.0,1.0,0.1),"gamma"=c(5.0,5.0,1.0),"zeta"=c(0.5,0.5,0.1))
 
 # create full list of all the to be researched entries 
 params_list <- vector(mode="list", length=ncol(params))
@@ -28,33 +28,35 @@ for (p in (1:ncol(params))){ # create list
   max <- params[2,p]
   step <- params[3,p]
   
-  tmplist <- c(min)
-  for (i in 1:((max-min)/step)) {
+  tmplist <- c()
+  for (i in 0:((max-min)/step)) {
     tmplist <- append(tmplist,min+step*i)
   }
   print(tmplist)
   params_list[[p]] <- tmplist
 } 
 
-# Create samples for all variables
-params_sample <- expand.grid(params_list$alpha,params_list$beta)
+# Create samples for all variables  !! not automatic 
+params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$gamma,params_list$zeta)
 names(params_sample) <- names(params)
 
 
 # create dataframe for observations and corresponding framerate 
-obs = data.frame("avgemo"=1,"uc"=10)
+obs = data.frame("tick"=1,"EmotionalState"=1,"DemandedFood"=1,"FoodInStorage"=1)
 
 # name the simulation 
 simulation_id = "1"
 
 # set path to model file 
-path = "/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/households_test.gaml"
+path = "/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/household_test.gaml"
 
 # give experiment name 
 exp_name = "GoWithR"
 
 # till what tick 
-until = "1000"
+cycles_in_day <- 6*24
+days_runtime<-10
+until = paste0(cycles_in_day*days_runtime)
 
 # Function creating temporary XML to run the experiment 
 createXML <- function(single_params,
@@ -129,13 +131,10 @@ for (run in 1:nrow(params_sample)){
   
 }
 
+total_df<-as.numeric(total_df)
+
 # Write results to csv
 write.csv(total_df,"/home/daan/Desktop/results.csv")
-
-
-
-
-
 
 
 

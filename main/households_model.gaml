@@ -107,13 +107,34 @@ species households skills:[moving] {
 		}
 	
 	
-
+//	facilities determine_facility { 							// Function determining closes faculty 	
+//		float min_dist <- #infinity; 							// infinitely large minimal distance
+//		facilities closest_fac <- nil; 							// no closest facility 
+//		loop fac over: facilities { 							// loop over all facilities in system 
+//			if distance_to(location,fac.location)<min_dist and fac != facility_of_choice{ 	// if distance between facilities is smaller than before
+//				min_dist <- distance_to(location,fac.location); // update smallest distance
+//				closest_fac <- fac; 							// update facility 
+//				}
+//			}
+//		return closest_fac; 
+//		}
+	
+//	action enter_queue{								// Function arranging entering queue 
+//		if facility_of_choice.queue_open = true{	// if the facility's queue is open 
+//			ask facility_of_choice {				// ask facility to 
+//				add myself to: queue;				// add this household agent to queue 
+//			}			
+//		} 		
+//	}
 
 	action forget{
-		emotional_state <- emotional_state / (1+(current_date.day-emotional_timestamp)*(alpha/cycles_in_day));
+		emotional_state <- emotional_state / (1+(current_date.day-emotional_timestamp)*alpha);
 	}
 
-
+//
+//	action go_facility{								// Function sending to facility
+//		do goto(facility_of_choice) speed: speed;	// go to facility with speed
+//	}
 	
 	action go_home {								// Function sending to home
 		do goto(home_location) speed: speed;		// go to home with speed
@@ -151,16 +172,14 @@ species households skills:[moving] {
 //	Reflexes
 
 	reflex live {
-		do forget;
-		
-		
+				
 //		At the beginning of each day 1) consume food and 2) determine whether the agent wants to go to a facility
 		if current_date.hour = 0  and current_date.minute = 0{
 			do consume_food;		
 			if (food_storage < gamma * ration/30 * nb_members) or emotional_state>=infected_threshold{
 				incentive_to_facility <- true;
 			}
-			
+			do forget;
 		}
 		
 		if emotional_state > infected_threshold {
