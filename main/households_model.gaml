@@ -153,7 +153,7 @@ species households skills:[moving] {
 		
 //		Change probability when the current hour is within active hours
 		if wake_up<=current_date.hour and current_date.hour<go_sleep {
-			float probability_of_interaction <- daily_probability_of_interaction / (active_hours * cycles_in_hour);
+			probability_of_interaction <- daily_probability_of_interaction / (active_hours * cycles_in_hour);
 		}
 		
 //		For every befriended household in the social network, with a p_of_interaction the emotional state is updated
