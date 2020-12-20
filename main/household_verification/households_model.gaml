@@ -10,8 +10,8 @@ model households_model
 
 
 //import "facilities_model.gaml"
+//import "network_test.gaml"
 import "household_test.gaml"
-import "network_test.gaml"
 //import "DEVS_sim.gaml"
 
 
@@ -109,7 +109,8 @@ species households skills:[moving] {
 
 
 	action forget{
-		emotional_state <- emotional_state / (1+(current_date.day-emotional_timestamp)*(alpha/cycles_in_day));
+		float forgettingfactor <- (current_date.day-emotional_timestamp)*(alpha/cycles_in_day);
+		emotional_state <- emotional_state / (1+forgettingfactor);
 	}
 
 
@@ -136,6 +137,7 @@ species households skills:[moving] {
 		
 //		For every befriended household in the social network, with a p_of_interaction the emotional state is updated
 		loop friend over: social_network {	
+			write friend.name;
 			if (rnd(0,10000)/10000) <  probability_of_interaction {							
 				float new_emotional_state <- pc * (1-(1-friend.emotional_state)*(1-emotional_state)) + (1-pc)*emotional_state*friend.emotional_state;
 				ask friend {
@@ -152,6 +154,8 @@ species households skills:[moving] {
 	reflex live {
 		do forget;
 		
+		write "nana" + length(social_network);
+		
 		
 //		At the beginning of each day 1) consume food and 2) determine whether the agent wants to go to a facility
 		if current_date.hour = 0  and current_date.minute = 0{
@@ -162,7 +166,7 @@ species households skills:[moving] {
 			
 		}
 		
-		if emotional_state > infected_threshold {
+		if emotional_state > infected_threshold and length(social_network)>0 {
 			do socialise;
 		}
 		

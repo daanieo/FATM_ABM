@@ -14,12 +14,14 @@ import "households_model.gaml"
 
 
 global {
-	
-	float seed<-0.0;
-	
+
 //	Experiment-variable and potential vital variable
 	bool startle <- false; 	
 	int avg_hh_size<-5;
+	int nb_households <-1;
+	
+	csv_file f <- csv_file("fully_matrix.csv");
+	matrix sn_matrix <- matrix(f);
 		
 //	Time-related constants
 	date starting_date <- date("2021-01-01 00:00:00");	
@@ -28,10 +30,12 @@ global {
 	int cycles_in_day <- 24*6; 
 	
 //	Vital variables
-	float alpha <- 0.1;
+	float alpha <- 0.0;
 	float beta <- 1.0;
 	float gamma <-1.0;
 	float epsilon; // Not relevant 
+	
+	float avg_pc <- 0.5; 
 	
 //	Statistics
 	list<float> average_emotional_states;
@@ -40,11 +44,8 @@ global {
 	
 	init {
 		
-		csv_file f <- csv_file("fully_matrix.csv");
-		matrix sn_matrix <- matrix(f);
-				
-		int nb_households<-1;
-		
+
+						
 //		Create household agents
 		create households number: nb_households{	
 	
@@ -55,9 +56,9 @@ global {
 			
 //			Specific constants
 			nb_members <- avg_hh_size; //rnd(1,avg_hh_size*2+1);
-			pc<- 0.5; //rnd(0,10)/10;
+			pc<- rnd(0,avg_pc*10*2)/10;
 			
-			
+			social_network <- [];
 			
 //			Initialise variables	
 			unsatisfied_consumption <- 0.0;
@@ -69,19 +70,28 @@ global {
 			emotional_timestamp <- 0;
 					
 		}
-		
-//		Making the social network based on the imported sn_matrix		
-		loop i from: 0 to: (nb_households-1) {			
-			loop j from: 0 to: (nb_households-1) {					
-				if int(sn_matrix[i,j]) = 1{			
-					ask households[int(i)]{
-						add households[j] to: social_network;	
-						}
-				} else{
-				}
-			}			
+			
 		}
-	}
+		
+	reflex t {
+		
+		if cycle = 0 {
+			
+			//		Making the social network based on the imported sn_matrix		
+			loop i from: 0 to: (nb_households-1) {			
+				loop j from: 0 to: (nb_households-1) {					
+					if int(sn_matrix[i,j]) = 1{			
+						ask households[int(i)]{
+							add households[j] to: social_network;	
+							}
+					} else{
+					}
+				}			
+			}		
+		}
+		}
+			
+
 	
 //	reflex fetch_statistics {
 //		add households mean_of each.emotional_state to: average_emotional_states;	
@@ -100,7 +110,6 @@ experiment simple_simulation keep_seed: true type: gui {
 	parameter "Forgetting rate" var: alpha min: 0 max: 1 step: 0.01;
 	parameter "Talkativity" var: beta min: 0 max: 1 step: 0.1; 
 	parameter "Security stock size" var: gamma min: 0 max: 30 step: 1; 
-	parameter "Average pc" var: zeta min: 0 max: 0.5 step: 0.1; 
 	
  
 	int nb_days_runtime <- 10;
@@ -127,12 +136,12 @@ experiment simple_simulation keep_seed: true type: gui {
 
 
 
-experiment RStartle type: gui keep_seed: true {
+experiment Startle type: gui keep_seed: true {
 	parameter "startle" var: startle <- true;
 	
 	parameter "alpha" var: alpha;
-	parameter "beta" var: beta;
 	parameter "gamma" var: gamma; 
+	
 	
 	output{	monitor "tick" value: cycle;
 			monitor "EmotionalState" value: households[0].emotional_state;		
@@ -141,11 +150,10 @@ experiment RStartle type: gui keep_seed: true {
 	}
 }
 
-experiment RNoStartle type: gui keep_seed: true {
+experiment NoStartle type: gui keep_seed: true {
 	parameter "startle" var: startle <- false;
 	
 	parameter "alpha" var: alpha;
-	parameter "beta" var: beta;
 	parameter "gamma" var: gamma; 
 	
 	output{	monitor "tick" value: cycle;

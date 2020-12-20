@@ -9,7 +9,7 @@
 model network_test
 
 
-import "households_model.gaml"
+import "households_model2.gaml"
 //import "facilities_model.gaml"
 
 
@@ -17,9 +17,8 @@ global {
 	
 	
 //	Experiment-variable and potential vital variable
-	bool startle <- false; 	
-	int avg_hh_size<-5;
-	float zeta <- 0.5;	
+	bool startle <- true; 	
+	int avg_hh_size <-5;
 		
 //	Time-related constants
 	date starting_date <- date("2021-01-01 00:00:00");	
@@ -41,7 +40,7 @@ global {
 	init {
 		
 
-		csv_file f <- csv_file("fully_matrix.csv");
+		csv_file f <- csv_file("sparsely_matrix.csv");
 		matrix sn_matrix <- matrix(f);
 				
 		int nb_households<-20;
@@ -95,11 +94,9 @@ global {
 
 
 experiment simple_simulation_network keep_seed: true type: gui {
-	parameter "No startle" var: startle <- true;
 	parameter "Forgetting rate" var: alpha min: 0 max: 1 step: 0.01;
 	parameter "Talkativity" var: beta min: 0 max: 1 step: 0.1; 
 	parameter "Security stock size" var: gamma min: 0 max: 30 step: 1; 
-	parameter "Average pc" var: zeta min: 0 max: 0.5 step: 0.1; 
 	
  
 	int nb_days_runtime <- 10;
