@@ -71,16 +71,19 @@ theme <- theme(plot.title = element_text(family = "Helvetica", size = (17.5)),
                       axis.text=element_text())
 ```
 
-Select gamma = 20.0, avg_pc=0.5 and beta = 0.1 to check the influence of alpha
+A plot of emotional state and food in storage output, respectively for:
+* alpha in range 0,0.5
+* gamma in range 0,30
+Which are the only relevant variables in the context of individual household testing.
 
 ```{r}
 df_tmp <- total_df #filter(total_df,beta==1,avg_pc==0.5,gamma==20.0,alpha>0)
 samplesize <- nrow(df_tmp) / (cycles_in_day*days_runtime)
 
-p <- ggplot()+xlim(0,2000) +theme+ ggtitle("Emotional state, alpha=[0.1, 0.5], beta=[0.4, 1.0], gamma=[5,30]") + labs(x="ticks [10 min]",y="Emotional state [-]",colour="alpha",size=(200))
+p <- ggplot()+xlim(0,cycles_in_day*days_runtime) +theme+ ggtitle("Emotional state: all value range") + labs(x="ticks [10 min]",y="Emotional state [-]",size=(200))
 for (s in 0:(samplesize-1)) {
   until<-as.numeric(until)
-  p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$EmotionalState[(s*until+1):((s+1)*until+1)]),color=as.numeric(df_tmp$alpha[(s*until+1):((s+1)*until+1)]))) #
+  p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$EmotionalState[(s*until+1):((s+1)*until+1)]))) #
 }
 print(p)
 ```
@@ -90,7 +93,44 @@ print(p)
 df_tmp <- total_df #filter(total_df,beta==1,avg_pc==0.5,gamma==20.0,alpha>0)
 samplesize <- nrow(df_tmp) / (cycles_in_day*days_runtime)
 
-p <- ggplot()+xlim(0,2000) +theme+ ggtitle("Emotional state, alpha=[0.1, 0.5], beta=[0.4, 1.0], gamma=[5,30]") + labs(x="ticks [10 min]",y="Emotional state [-]",colour="alpha",size=(200))
+p <- ggplot()+xlim(0,cycles_in_day*days_runtime) +theme+ ggtitle("Food in storage: all value range") + labs(x="ticks [10 min]",y="Food in storage [kg]",size=(200))
+for (s in 0:(samplesize-1)) {
+  until<-as.numeric(until)
+  p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$FoodInStorage[(s*until+1):((s+1)*until+1)]))) #
+}
+print(p)
+```
+
+
+With the same values we see that the food in storage is also higher for higher alpha
+```{r}
+df_tmp <- filter(total_df,gamma==10.0)
+
+p <- ggplot()+xlim(0,cycles_in_day*days_runtime) +theme+ ggtitle("Emotional state: alpha=[0.1 : 0.5] gamma=10") + labs(x="ticks [10 min]",y="Emotional state [-]",colour="alpha",size=(200))+scale_colour_gradient(low="lightblue",high="blue4")
+for (s in 0:(samplesize-1)) {
+  until<-as.numeric(until)
+  p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$EmotionalState[(s*until+1):((s+1)*until+1)]),color=as.numeric(df_tmp$alpha[(s*until+1):((s+1)*until+1)]))) #
+}
+print(p)
+```
+
+and with alpha =0.1 , avg_pc=0.5 and beta = 0.1 to check the influence of gamma
+
+```{r}
+df_tmp <- filter(total_df,gamma==10.0)
+
+p <- ggplot()+xlim(0,cycles_in_day*days_runtime) +theme+ ggtitle("Food in storage: alpha=[0.1 : 0.5] gamma=10") + labs(x="ticks [10 min]",y="Food in storage [kg]",colour="alpha",size=(200))+scale_colour_gradient(low="lightblue",high="blue4")
+for (s in 0:(samplesize-1)) {
+  until<-as.numeric(until)
+  p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$FoodInStorage[(s*until+1):((s+1)*until+1)]),color=as.numeric(df_tmp$alpha[(s*until+1):((s+1)*until+1)]))) #
+}
+print(p)
+```
+
+```{r}
+df_tmp <- filter(total_df,alpha==0.1)
+
+p <- ggplot()+xlim(0,cycles_in_day*days_runtime) +theme+ ggtitle("Food in storage: alpha=[0.1 : 0.5] gamma=10") + labs(x="ticks [10 min]",y="Food in storage [kg]",colour="alpha",size=(200))+scale_colour_gradient(low="lightblue",high="blue4")
 for (s in 0:(samplesize-1)) {
   until<-as.numeric(until)
   p<-p+geom_line(aes_string(x=as.numeric(df_tmp$tick[(s*until+1):((s+1)*until+1)]),y=as.numeric(df_tmp$FoodInStorage[(s*until+1):((s+1)*until+1)]),color=as.numeric(df_tmp$alpha[(s*until+1):((s+1)*until+1)]))) #
@@ -99,14 +139,7 @@ print(p)
 ```
 
 
-With the same values we see that the food in storage is also higher for higher alpha
-```{r}
 
-```
-
-and with alpha =0.1 , avg_pc=0.5 and beta = 0.1 to check the influence of gamma
-
-```{r}
 
 ```
 
