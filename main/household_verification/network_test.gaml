@@ -58,6 +58,8 @@ global {
 			pc<- rnd(0,10)/10;		
 			
 			
+			
+			
 //			Initialise variables	
 			unsatisfied_consumption <- 0.0;
 			unsatisfied_demand <- 0.0;

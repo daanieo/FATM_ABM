@@ -71,34 +71,26 @@ global {
 					
 		}
 			
-		}
 		
-	reflex t {
-		
-		if cycle = 0 {
+	
 			
-			//		Making the social network based on the imported sn_matrix		
-			loop i from: 0 to: (nb_households-1) {			
-				loop j from: 0 to: (nb_households-1) {					
-					if int(sn_matrix[i,j]) = 1{			
-						ask households[int(i)]{
-							add households[j] to: social_network;	
-							}
-					} else{
-					}
-				}			
-			}		
-		}
+		//		Making the social network based on the imported sn_matrix		
+		loop i from: 0 to: (nb_households-1) {			
+			loop j from: 0 to: (nb_households-1) {					
+				if int(sn_matrix[i,j]) = 1{			
+					ask households[int(i)]{
+						add households[j] to: social_network;	
+						}
+				} else{
+				}
+			}			
+		}		
+		
 		}
 			
 
 	
-//	reflex fetch_statistics {
-//		add households mean_of each.emotional_state to: average_emotional_states;	
-//		add households sum_of each.food_storage to: summed_food_storage;
-//		add households sum_of each.unsatisfied_demand to: summed_demanded_food; // unsatisfied demand as temporary container 	 
-//		
-//	}
+
 	
 }
 
