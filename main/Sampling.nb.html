@@ -1846,10 +1846,17 @@ createXML &lt;- function(single_params,
 <p>Avoiding setup of experiments using gamar, we have to manually define parameters spaces and stepsize. Note that these must correspond with the parameters as defined in the experiment in the GAMA model.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBkZWZpbmUgdG8gYmUgcmVzZWFyY2hlZCBwYXJhbWV0cmVzIGFzIGMobWluLG1heCxzdGVwc2l6ZSkgQ0hFQ0sgSUYgKG1heC1taW4pJXN0ZXBzaXplID09IDAgIVxuI3BhcmFtcyA9IGRhdGEuZnJhbWUoXCJQYXJhbGxlbFNlcnZlZFwiPWMoMSwxMCwxKSwgXCJhbHBoYVwiPWMoMC4xLDAuMSwwLjEpLFwiYmV0YVwiPWMoMS4wLDEuMCwwLjEpLFwiZ2FtbWFcIj1jKDEuMCwzMC4wLDEuMCkpXG5wYXJhbXMgPSBkYXRhLmZyYW1lKFwiYWxwaGFcIj1jKDAuMCwwLjAsMS4wKSxcImJldGFcIj1jKDEuMCwxLjAsMC44KSxcImdhbW1hXCI9Yyg1LjAsNS4wLDEuMCkpXG5cbiMgY3JlYXRlIGZ1bGwgbGlzdCBvZiBhbGwgdGhlIHRvIGJlIHJlc2VhcmNoZWQgZW50cmllcyBcbnBhcmFtc19saXN0IDwtIHZlY3Rvcihtb2RlPVwibGlzdFwiLCBsZW5ndGg9bmNvbChwYXJhbXMpKVxuIyBhZGQgbmFtZXMgdG8gbGlzdFxubmFtZXMocGFyYW1zX2xpc3QpIDwtIG5hbWVzKHBhcmFtcylcblxuZm9yIChwIGluICgxOm5jb2wocGFyYW1zKSkpeyAjIGNyZWF0ZSBsaXN0XG4gIG1pbiA8LSBwYXJhbXNbMSxwXVxuICBtYXggPC0gcGFyYW1zWzIscF1cbiAgc3RlcCA8LSBwYXJhbXNbMyxwXVxuICBcbiAgdG1wbGlzdCA8LSBjKClcbiAgZm9yIChpIGluIDA6KChtYXgtbWluKS9zdGVwKSkge1xuICAgIHRtcGxpc3QgPC0gYXBwZW5kKHRtcGxpc3QsbWluK3N0ZXAqaSlcbiAgfVxuICBwYXJhbXNfbGlzdFtbcF1dIDwtIHRtcGxpc3Rcbn0gXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBkZWZpbmUgdG8gYmUgcmVzZWFyY2hlZCBwYXJhbWV0cmVzIGFzIGMobWluLG1heCxzdGVwc2l6ZSkgQ0hFQ0sgSUYgKG1heC1taW4pJXN0ZXBzaXplID09IDAgIVxuXG5wYXJhbXMgPSBkYXRhLmZyYW1lKFwiYWxwaGFcIj1jKDAuMSwwLjEsMC40KSxcImJldGFcIj1jKDAsMS4wLDEuMCksIFwiUGFyYWxsZWxTZXJ2ZWRcIj1jKDEsNSw0KSwgXCJnYW1tYVwiPWMoMSwxMSw1KSxcImVwc2lsb25cIj1jKDAsMS4wLDAuNSkpICAjIFF1ZXVlIHRlc3RpbmdcbiMgcGFyYW1zID0gZGF0YS5mcmFtZShcIlBhcmFsbGVsU2VydmVkXCI9YygxLDEwLDEpLCBcImdhbW1hXCI9YygwLDMwLjAsMTApKSAjIEZhY2lsaXR5IHRlc3RpbmdcblxuIyBwYXJhbXMgPSBkYXRhLmZyYW1lKFwiYWxwaGFcIj1jKDAuMCwxLjAsMS4wKSxcImJldGFcIj1jKDAsMS4wLDEuMCksXCJhdmdfcGNcIj1jKDAsMS4wLDEuMCkpICMgbmV0d29yayB0ZXN0aW5nIGZvciBleHRyZW1lIHZhbHVlc1xuIyBwYXJhbXMgPSBkYXRhLmZyYW1lKFwiYWxwaGFcIj1jKDAuMSwwLjUsMC40KSxcImJldGFcIj1jKDAsMS4wLDAuNSkpICMgbmV0d29yayB0ZXN0aW5nIHNhbXBsaW5nXG5cbiNwYXJhbXMgPSBkYXRhLmZyYW1lKFwiYWxwaGFcIj1jKDAuMSwwLjEsMS4wKSxcImdhbW1hXCI9YygwLjAsMzAuMCwxMC4wKSkgIyBpbmRpdmlkdWFsIGhvdXNlaG9sZCB0ZXN0aW5nXG5cblxuIyBjcmVhdGUgZnVsbCBsaXN0IG9mIGFsbCB0aGUgdG8gYmUgcmVzZWFyY2hlZCBlbnRyaWVzIFxucGFyYW1zX2xpc3QgPC0gdmVjdG9yKG1vZGU9XCJsaXN0XCIsIGxlbmd0aD1uY29sKHBhcmFtcykpXG4jIGFkZCBuYW1lcyB0byBsaXN0XG5uYW1lcyhwYXJhbXNfbGlzdCkgPC0gbmFtZXMocGFyYW1zKVxuXG5mb3IgKHAgaW4gKDE6bmNvbChwYXJhbXMpKSl7ICMgY3JlYXRlIGxpc3RcbiAgbWluIDwtIHBhcmFtc1sxLHBdXG4gIG1heCA8LSBwYXJhbXNbMixwXVxuICBzdGVwIDwtIHBhcmFtc1szLHBdXG4gIFxuICB0bXBsaXN0IDwtIGMoKVxuICBmb3IgKGkgaW4gMDooKG1heC1taW4pL3N0ZXApKSB7XG4gICAgdG1wbGlzdCA8LSBhcHBlbmQodG1wbGlzdCxtaW4rc3RlcCppKVxuICB9XG4gIHBhcmFtc19saXN0W1twXV0gPC0gdG1wbGlzdFxufSBcblxuYGBgIn0= -->
 <pre class="r"><code># define to be researched parametres as c(min,max,stepsize) CHECK IF (max-min)%stepsize == 0 !
-#params = data.frame(&quot;ParallelServed&quot;=c(1,10,1), &quot;alpha&quot;=c(0.1,0.1,0.1),&quot;beta&quot;=c(1.0,1.0,0.1),&quot;gamma&quot;=c(1.0,30.0,1.0))
-params = data.frame(&quot;alpha&quot;=c(0.0,0.0,1.0),&quot;beta&quot;=c(1.0,1.0,0.8),&quot;gamma&quot;=c(5.0,5.0,1.0))
+
+params = data.frame(&quot;alpha&quot;=c(0.1,0.1,0.4),&quot;beta&quot;=c(0,1.0,1.0), &quot;ParallelServed&quot;=c(1,5,4), &quot;gamma&quot;=c(1,11,5),&quot;epsilon&quot;=c(0,1.0,0.5))  # Queue testing
+# params = data.frame(&quot;ParallelServed&quot;=c(1,10,1), &quot;gamma&quot;=c(0,30.0,10)) # Facility testing
+
+# params = data.frame(&quot;alpha&quot;=c(0.0,1.0,1.0),&quot;beta&quot;=c(0,1.0,1.0),&quot;avg_pc&quot;=c(0,1.0,1.0)) # network testing for extreme values
+# params = data.frame(&quot;alpha&quot;=c(0.1,0.5,0.4),&quot;beta&quot;=c(0,1.0,0.5)) # network testing sampling
+
+#params = data.frame(&quot;alpha&quot;=c(0.1,0.1,1.0),&quot;gamma&quot;=c(0.0,30.0,10.0)) # individual household testing
+
 
 # create full list of all the to be researched entries 
 params_list &lt;- vector(mode=&quot;list&quot;, length=ncol(params))
@@ -1874,10 +1881,15 @@ for (p in (1:ncol(params))){ # create list
 <p>Next, we have to make a permutation of the input parameter list as the basis for an exhaustive experiment (all combinations of parameters).</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhdGUgc2FtcGxlcyBmb3IgYWxsIHZhcmlhYmxlcyAgISEgbm90IGF1dG9tYXRpYyBcbiMgcGFyYW1zX3NhbXBsZSA8LSBleHBhbmQuZ3JpZChwYXJhbXNfbGlzdCRQYXJhbGxlbFNlcnZlZCxwYXJhbXNfbGlzdCRhbHBoYSxwYXJhbXNfbGlzdCRiZXRhLHBhcmFtc19saXN0JGdhbW1hKVxucGFyYW1zX3NhbXBsZSA8LSBleHBhbmQuZ3JpZChwYXJhbXNfbGlzdCRhbHBoYSxwYXJhbXNfbGlzdCRiZXRhLHBhcmFtc19saXN0JGdhbW1hKVxubmFtZXMocGFyYW1zX3NhbXBsZSkgPC0gbmFtZXMocGFyYW1zKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhdGUgc2FtcGxlcyBmb3IgYWxsIHZhcmlhYmxlcyAgISEgbm90IGF1dG9tYXRpYyBcbnBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSxwYXJhbXNfbGlzdCRQYXJhbGxlbFNlcnZlZCxwYXJhbXNfbGlzdCRnYW1tYSxwYXJhbXNfbGlzdCRlcHNpbG9uKSAjIFF1ZXVlIHRlc3RpbmdcbiMgcGFyYW1zX3NhbXBsZSA8LSBleHBhbmQuZ3JpZChwYXJhbXNfbGlzdCRQYXJhbGxlbFNlcnZlZCxwYXJhbXNfbGlzdCRhbHBoYSxwYXJhbXNfbGlzdCRiZXRhLHBhcmFtc19saXN0JGdhbW1hKVxuXG4jIHBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSxwYXJhbXNfbGlzdCRhdmdfcGMpICMgbmV0d29yayB0ZXN0aW5nIGV4dHJlbWUgdmFsdWVzXG4jIHBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSkgIyBuZXR3b3JrIHRlc3Rpbmcgc2FtcGxpbmdcblxuIyBwYXJhbXNfc2FtcGxlIDwtIGV4cGFuZC5ncmlkKHBhcmFtc19saXN0JGFscGhhLHBhcmFtc19saXN0JGdhbW1hKSAjIGluZGl2aWR1YWwgaG91c2Vob2xkIHRlc3RpbmcgXG5uYW1lcyhwYXJhbXNfc2FtcGxlKSA8LSBuYW1lcyhwYXJhbXMpXG5gYGAifQ== -->
 <pre class="r"><code># Create samples for all variables  !! not automatic 
+params_sample &lt;- expand.grid(params_list$alpha,params_list$beta,params_list$ParallelServed,params_list$gamma,params_list$epsilon) # Queue testing
 # params_sample &lt;- expand.grid(params_list$ParallelServed,params_list$alpha,params_list$beta,params_list$gamma)
-params_sample &lt;- expand.grid(params_list$alpha,params_list$beta,params_list$gamma)
+
+# params_sample &lt;- expand.grid(params_list$alpha,params_list$beta,params_list$avg_pc) # network testing extreme values
+# params_sample &lt;- expand.grid(params_list$alpha,params_list$beta) # network testing sampling
+
+# params_sample &lt;- expand.grid(params_list$alpha,params_list$gamma) # individual household testing 
 names(params_sample) &lt;- names(params)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1885,24 +1897,31 @@ names(params_sample) &lt;- names(params)</code></pre>
 <p>Next, we have to set our observables in a data.frame. The names must correspond with the observations as defined in the experiment in the GAMA model. The value it equals the framerate: framerate of 10 means fetching the output values every 10 ticks.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjcmVhdGUgZGF0YWZyYW1lIGZvciBvYnNlcnZhdGlvbnMgYW5kIGNvcnJlc3BvbmRpbmcgZnJhbWVyYXRlIFxuIyBvYnMgPSBkYXRhLmZyYW1lKFwidGlja1wiPTEsXCJBdmVyYWdlRGVsaXZlcnlTaXplXCI9MSxcIlF1ZXVlTGVuZ3RoXCI9MSxcIkZhY2lsaXR5U3RvcmFnZVwiPTEpXG5vYnMgPSBkYXRhLmZyYW1lKFwidGlja1wiPTEsXCJBdmVyYWdlRW1vdGlvbmFsU3RhdGVcIj0xKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBjcmVhdGUgZGF0YWZyYW1lIGZvciBvYnNlcnZhdGlvbnMgYW5kIGNvcnJlc3BvbmRpbmcgZnJhbWVyYXRlIFxuIyBvYnMgPSBkYXRhLmZyYW1lKFwidGlja1wiPTEsXCJBdmVyYWdlRW1vdGlvbmFsU3RhdGVcIj0xLFwiRW1vdGlvbmFsU3RhdGVcIj0xKSAjIE5ldHdvcmsgdGVzdGluZyBcbiMgb2JzID0gZGF0YS5mcmFtZShcInRpY2tcIj0xLFwiRW1vdGlvbmFsU3RhdGVcIj0xLFwiRm9vZEluU3RvcmFnZVwiPTEpICMgSW5kaXZpZHVhbCBob3VzZWhvbGQgdGVzdGluZ1xuIyBvYnMgPSBkYXRhLmZyYW1lKFwidGlja1wiPTEsXCJBdmVyYWdlRGVsaXZlcnlTaXplXCI9MSxcIlF1ZXVlTGVuZ3RoXCI9MSxcIkZhY2lsaXR5U3RvcmFnZVwiPTEpXG5vYnMgPSBkYXRhLmZyYW1lKFwidGlja1wiPTEsXCJBdmVyYWdlRGVsaXZlcnlTaXplXCI9MSxcIlF1ZXVlTGVuZ3RoXCI9MSxcIkZhY2lsaXR5U3RvcmFnZVwiPTEsXCJBdmVyYWdlRW1vdGlvbmFsU3RhdGVcIj0xKVxuXG5gYGAifQ== -->
 <pre class="r"><code># create dataframe for observations and corresponding framerate 
+# obs = data.frame(&quot;tick&quot;=1,&quot;AverageEmotionalState&quot;=1,&quot;EmotionalState&quot;=1) # Network testing 
+# obs = data.frame(&quot;tick&quot;=1,&quot;EmotionalState&quot;=1,&quot;FoodInStorage&quot;=1) # Individual household testing
 # obs = data.frame(&quot;tick&quot;=1,&quot;AverageDeliverySize&quot;=1,&quot;QueueLength&quot;=1,&quot;FacilityStorage&quot;=1)
-obs = data.frame(&quot;tick&quot;=1,&quot;AverageEmotionalState&quot;=1)</code></pre>
+obs = data.frame(&quot;tick&quot;=1,&quot;AverageDeliverySize&quot;=1,&quot;QueueLength&quot;=1,&quot;FacilityStorage&quot;=1,&quot;AverageEmotionalState&quot;=1)
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Next, we set the input parameters that will feed into the <code>createXML</code> function</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgcGF0aCB0byBtb2RlbCBmaWxlIFxuI3BhdGggPSBcIi9ob21lL2RhYW4vR0FNQS93b3Jrc3BhY2UvRkFUTV9BQk0vbWFpbi9mYWNpbGl0eV92ZXJpZmljYXRpb24vZmFjaWxpdGllc190ZXN0LmdhbWxcIlxuIyBwYXRoID0gXCIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vaG91c2Vob2xkX3ZlcmlmaWNhdGlvbi9ob3VzZWhvbGRfdGVzdC5nYW1sXCJcbnBhdGggPSBcIi9ob21lL2RhYW4vR0FNQS93b3Jrc3BhY2UvRkFUTV9BQk0vbWFpbi9ob3VzZWhvbGRfdmVyaWZpY2F0aW9uL25ldHdvcmtfdGVzdC5nYW1sXCJcblxuIyBnaXZlIGV4cGVyaW1lbnQgbmFtZSBcbmV4cF9uYW1lID0gXCJOZXR3b3JrU3RhcnRsZVwiXG5cbiMgdGlsbCB3aGF0IHRpY2sgXG5jeWNsZXNfaW5fZGF5IDwtIDYqMjRcbmRheXNfcnVudGltZTwtMzBcbnVudGlsID0gcGFzdGUwKGN5Y2xlc19pbl9kYXkqZGF5c19ydW50aW1lKVxuXG5yZXBsaWNhdGlvbnMgPC0gMVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzZXQgcGF0aCB0byBtb2RlbCBmaWxlIFxucGF0aCA9IFwiL2hvbWUvZGFhbi9HQU1BL3dvcmtzcGFjZS9GQVRNX0FCTS9tYWluL2ZhY2lsaXR5X3ZlcmlmaWNhdGlvbi9RUmVhY3Rpb25fdGVzdC5nYW1sXCJcbiNwYXRoID0gXCIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vZmFjaWxpdHlfdmVyaWZpY2F0aW9uL2ZhY2lsaXRpZXNfdGVzdC5nYW1sXCJcblxuIyBwYXRoID0gXCIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vaG91c2Vob2xkX3ZlcmlmaWNhdGlvbi9ob3VzZWhvbGRfdGVzdC5nYW1sXCJcbiMgcGF0aCA9IFwiL2hvbWUvZGFhbi9HQU1BL3dvcmtzcGFjZS9GQVRNX0FCTS9tYWluL2hvdXNlaG9sZF92ZXJpZmljYXRpb24vbmV0d29ya190ZXN0LmdhbWxcIlxuXG4jIGdpdmUgZXhwZXJpbWVudCBuYW1lIFxuIyBleHBfbmFtZSA9IFwiTm9TdGFydGxlXCJcbiMgZXhwX25hbWUgPSBcIk5ldHdvcmtTdGFydGxlXCJcbmV4cF9uYW1lID0gXCJGYWNpbGl0eVRvSG91c2Vob2xkc1wiXG5cbiMgdGlsbCB3aGF0IHRpY2sgXG5jeWNsZXNfaW5fZGF5IDwtIDYqMjRcbmRheXNfcnVudGltZTwtMzBcbnVudGlsID0gcGFzdGUwKGN5Y2xlc19pbl9kYXkqZGF5c19ydW50aW1lKVxuXG5yZXBsaWNhdGlvbnMgPC0gMVxuXG5gYGAifQ== -->
 <pre class="r"><code># set path to model file 
+path = &quot;/home/daan/GAMA/workspace/FATM_ABM/main/facility_verification/QReaction_test.gaml&quot;
 #path = &quot;/home/daan/GAMA/workspace/FATM_ABM/main/facility_verification/facilities_test.gaml&quot;
+
 # path = &quot;/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/household_test.gaml&quot;
-path = &quot;/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/network_test.gaml&quot;
+# path = &quot;/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/network_test.gaml&quot;
 
 # give experiment name 
-exp_name = &quot;NetworkStartle&quot;
+# exp_name = &quot;NoStartle&quot;
+# exp_name = &quot;NetworkStartle&quot;
+exp_name = &quot;FacilityToHouseholds&quot;
 
 # till what tick 
 cycles_in_day &lt;- 6*24
@@ -1920,7 +1939,7 @@ replications &lt;- 1
 <p>Lastly, we initialise the data.frame in which all results + input parametres will be stored as NULL. For every row in the permutation list <code>params_sample</code> and for the number of replications <code>replications</code> the model is initialised and the results defined in <code>obs</code> are stored in the <code>total_df</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGIgPC0gU3lzLnRpbWUoKVxuXG4jIGVtcHR5IGRmIFxudG90YWxfZGYgPC0gTlVMTFxuXG4jIGZvciB0aGUgZW50aXJlIHNhbXBsZSBsaXN0IFxuZm9yIChydW4gaW4gMTpucm93KHBhcmFtc19zYW1wbGUpKXtcbiAgXG4gIGZvciAocmVwbGljYXRpb24gaW4gMTpyZXBsaWNhdGlvbnMpe1xuICAgIFxuICAgIHNpbXVsYXRpb25faWQ8LXBhc3RlMChyZXBsaWNhdGlvbilcbiAgICBcbiAgICAjIHRlbXBvcmFyeSBleHBlcmltZW50IHhtbFxuICAgIHRtcF94bWwgPC0gY3JlYXRlWE1MKHNpbmdsZV9wYXJhbXMgPSBwYXJhbXNfc2FtcGxlW3J1bixdLG9icz1vYnMsc2ltdWxhdGlvbl9pZCA9IHNpbXVsYXRpb25faWQsbW9kZWxfcGF0aCA9IHBhdGgsZXhwX25hbWUgPSAgIGV4cF9uYW1lLHVudGlsPXVudGlsKVxuICAgIHRtcF9kaXIgPC0gdGVtcGRpcigpICMgdGVtcG9yYXJ5IGRpciB0byBzdG9yZSBvdXRjb21lIHhtbFxuICAgIG1lc3NhZ2UoXCJjYWxsIGdhbWEgbW9kZWxcIilcbiAgICBcbiAgICBtZXNzYWdlKHRtcF94bWwpXG4gICAgXG4gICAgY2FsbF9nYW1hKHRtcF94bWwsaHBjPTIsb3V0cHV0X2RpciA9IHRtcF9kaXIpICMgcnVuIGdhbWEgbW9kZWxcbiAgICBcbiAgICBcbiAgICBtZXNzYWdlKFwiaW1wb3J0IG91dGNvbWUgeG1sXCIpXG4gICAgIyBpbXBvcnQgb3V0Y29tZSB4bWwgXG4gICAgdG1wX2RmPC1YTUw6OnhtbFRvRGF0YUZyYW1lKFhNTDo6eG1sUGFyc2UocGFzdGUwKHRtcF9kaXIsXCIvXCIsXCJzaW11bGF0aW9uLW91dHB1dHNcIixzaW11bGF0aW9uX2lkLFwiLnhtbFwiKSksIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSlcbiAgICAjIGFkZCBjb2x1bW4gbmFtZXNcbiAgICBuYW1lcyh0bXBfZGYpPC1jb2xuYW1lcyhvYnMpXG4gICAgXG4gICAgIyBkZWxldGUgdGVtcG9yYXJ5IHhtbCBmaWxlc1xuICAgIHVubGluayhwYXN0ZTAodG1wX2RpcixcIi9cIixcInNpbXVsYXRpb24tb3V0cHV0c1wiLHNpbXVsYXRpb25faWQsXCIueG1sXCIpKVxuICAgIHVubGluayh0bXBfeG1sKVxuICAgIFxuICAgICMgYWRkIGlucHV0IHBhcmFtZXRlcnMgdG8gZGZcbiAgICBmb3IgKHAgaW4gMTpuY29sKHBhcmFtc19zYW1wbGUpKXtcbiAgICAgIHRtcGNvbCA8LSByZXAocGFyYW1zX3NhbXBsZVtydW4scF0sdW50aWwpXG4gICAgICBcbiAgICAgIHRtcF9kZiA8LSBjYmluZCh0bXBjb2wsdG1wX2RmKVxuICAgICAgbmFtZXModG1wX2RmKVsxXSA8LSBuYW1lcyhwYXJhbXNfc2FtcGxlKVtwXVxuICAgIH1cbiAgICBcbiAgICB0bXBjb2wgPC0gcmVwKHNpbXVsYXRpb25faWQsdW50aWwpXG4gICAgXG4gICAgdG1wX2RmIDwtIGNiaW5kKHRtcGNvbCx0bXBfZGYpXG4gICAgbmFtZXModG1wX2RmKVsxXSA8LSBcIlJlcGxpY2F0aW9uXCJcbiAgXG4gICAgIyBhZGQgdG8gZXhpc3RpbmcgZGF0YWZyYW1lIFxuICAgIGlmIChpcy5udWxsKHRvdGFsX2RmKSl7XG4gICAgICB0b3RhbF9kZjwtdG1wX2RmXG4gICAgfSBlbHNle1xuICAgICAgdG90YWxfZGYgPC0gcmJpbmQodG90YWxfZGYsIHRtcF9kZilcbiAgICB9XG4gIH1cbn1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGIgPC0gU3lzLnRpbWUoKVxuXG4jIGVtcHR5IGRmIFxudG90YWxfZGYgPC0gTlVMTFxuXG4jIGZvciB0aGUgZW50aXJlIHNhbXBsZSBsaXN0IFxuZm9yIChydW4gaW4gMTpucm93KHBhcmFtc19zYW1wbGUpKXtcbiAgZm9yIChyZXBsaWNhdGlvbiBpbiAxOnJlcGxpY2F0aW9ucyl7XG4gICAgc2ltdWxhdGlvbl9pZDwtcGFzdGUwKHJlcGxpY2F0aW9uKVxuICAgIFxuICAgICMgdGVtcG9yYXJ5IGV4cGVyaW1lbnQgeG1sXG4gICAgdG1wX3htbCA8LSBjcmVhdGVYTUwoc2luZ2xlX3BhcmFtcyA9IHBhcmFtc19zYW1wbGVbcnVuLF0sb2JzPW9icyxzaW11bGF0aW9uX2lkID0gc2ltdWxhdGlvbl9pZCxtb2RlbF9wYXRoID0gcGF0aCxleHBfbmFtZSA9ICAgZXhwX25hbWUsdW50aWw9dW50aWwpXG4gICAgdG1wX2RpciA8LSB0ZW1wZGlyKCkgIyB0ZW1wb3JhcnkgZGlyIHRvIHN0b3JlIG91dGNvbWUgeG1sXG4gICAgbWVzc2FnZShcImNhbGwgZ2FtYSBtb2RlbFwiKVxuICBcbiAgICBjYWxsX2dhbWEodG1wX3htbCxocGM9MixvdXRwdXRfZGlyID0gdG1wX2RpcikgIyBydW4gZ2FtYSBtb2RlbFxuICAgIFxuICAgIG1lc3NhZ2UoXCJpbXBvcnQgb3V0Y29tZSB4bWxcIilcbiAgICAjIGltcG9ydCBvdXRjb21lIHhtbCBcbiAgICB0bXBfZGY8LVhNTDo6eG1sVG9EYXRhRnJhbWUoWE1MOjp4bWxQYXJzZShwYXN0ZTAodG1wX2RpcixcIi9cIixcInNpbXVsYXRpb24tb3V0cHV0c1wiLHNpbXVsYXRpb25faWQsXCIueG1sXCIpKSwgc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKVxuICAgICMgYWRkIGNvbHVtbiBuYW1lc1xuICAgIG5hbWVzKHRtcF9kZik8LWNvbG5hbWVzKG9icylcbiAgICBcbiAgICAjIGRlbGV0ZSB0ZW1wb3JhcnkgeG1sIGZpbGVzXG4gICAgdW5saW5rKHBhc3RlMCh0bXBfZGlyLFwiL1wiLFwic2ltdWxhdGlvbi1vdXRwdXRzXCIsc2ltdWxhdGlvbl9pZCxcIi54bWxcIikpXG4gICAgdW5saW5rKHRtcF94bWwpXG4gICAgXG4gICAgIyBhZGQgaW5wdXQgcGFyYW1ldGVycyB0byBkZlxuICAgIGZvciAocCBpbiAxOm5jb2wocGFyYW1zX3NhbXBsZSkpe1xuICAgICAgdG1wY29sIDwtIHJlcChwYXJhbXNfc2FtcGxlW3J1bixwXSx1bnRpbClcbiAgICAgIFxuICAgICAgdG1wX2RmIDwtIGNiaW5kKHRtcGNvbCx0bXBfZGYpXG4gICAgICBuYW1lcyh0bXBfZGYpWzFdIDwtIG5hbWVzKHBhcmFtc19zYW1wbGUpW3BdXG4gICAgfVxuICAgIFxuICAgIHRtcGNvbCA8LSByZXAoc2ltdWxhdGlvbl9pZCx1bnRpbClcbiAgICBcbiAgICB0bXBfZGYgPC0gY2JpbmQodG1wY29sLHRtcF9kZilcbiAgICBuYW1lcyh0bXBfZGYpWzFdIDwtIFwiUmVwbGljYXRpb25cIlxuICBcbiAgICAjIGFkZCB0byBleGlzdGluZyBkYXRhZnJhbWUgXG4gICAgaWYgKGlzLm51bGwodG90YWxfZGYpKXtcbiAgICAgIHRvdGFsX2RmPC10bXBfZGZcbiAgICB9IGVsc2V7XG4gICAgICB0b3RhbF9kZiA8LSByYmluZCh0b3RhbF9kZiwgdG1wX2RmKVxuICAgIH1cbiAgfVxufVxuYGBgIn0= -->
 <pre class="r"><code>tb &lt;- Sys.time()
 
 # empty df 
@@ -1928,20 +1947,15 @@ total_df &lt;- NULL
 
 # for the entire sample list 
 for (run in 1:nrow(params_sample)){
-  
   for (replication in 1:replications){
-    
     simulation_id&lt;-paste0(replication)
     
     # temporary experiment xml
     tmp_xml &lt;- createXML(single_params = params_sample[run,],obs=obs,simulation_id = simulation_id,model_path = path,exp_name =   exp_name,until=until)
     tmp_dir &lt;- tempdir() # temporary dir to store outcome xml
     message(&quot;call gama model&quot;)
-    
-    message(tmp_xml)
-    
+  
     call_gama(tmp_xml,hpc=2,output_dir = tmp_dir) # run gama model
-    
     
     message(&quot;import outcome xml&quot;)
     # import outcome xml 
@@ -1975,9 +1989,253 @@ for (run in 1:nrow(params_sample)){
   }
 }</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiZW1wdHkgWE1MIGRvY3VtZW50Y2FsbCBnYW1hIG1vZGVsXG4vdG1wL1J0bXBmQU9mY2gvZmlsZWEwNzc1NzUzZTMueG1sXG4ifQ== -->
-<pre><code>empty XML documentcall gama model
-/tmp/RtmpfAOfch/filea0775753e3.xml</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiZW1wdHkgWE1MIGRvY3VtZW50Y2FsbCBnYW1hIG1vZGVsXG4ifQ== -->
+<pre><code>empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
+<pre><code>Running experiment plan... </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiaW1wb3J0IG91dGNvbWUgeG1sXG5lbXB0eSBYTUwgZG9jdW1lbnRjYWxsIGdhbWEgbW9kZWxcbiJ9 -->
+<pre><code>import outcome xml
+empty XML documentcall gama model</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiUnVubmluZyBleHBlcmltZW50IHBsYW4uLi4gXG4ifQ== -->
 <pre><code>Running experiment plan... </code></pre>
@@ -1993,8 +2251,8 @@ ta &lt;- Sys.time()
 
 message(&quot;took me &quot;,ta-tb)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoidG9vayBtZSA1LjkzODI1NzQ1NTgyNTgxXG4ifQ== -->
-<pre><code>took me 5.93825745582581</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoidG9vayBtZSAxNy43NjQxNjI4NTQzNTM2XG4ifQ== -->
+<pre><code>took me 17.7641628543536</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2016,7 +2274,7 @@ message(&quot;took me &quot;,ta-tb)</code></pre>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2FtcGxpbmcgR0FNTCBtb2RlbCBhbmQgc3RvcmluZyBpbiBkYXRhLmZyYW1lIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiMjIFNldHRpbmcgdXAgR0FNQSAKClIgbm90ZWJvb2sgdG8gdXNlIFIgaW4gcmVsYXRpb24gd2l0aCBzYW1wbGluZyBHQU1BLiBGdW5jdGlvbnMgYXJlOiAxKSBhdXRvbWF0aWMgY3JlYXRpbmcgWE1MIEV4cGVyaW1lbnQgZmlsZXMsIDIpIGNvbW11bmljYXRpb24gd2l0aCBHQU1BLCAzKSBBdXRvbWF0aWMgaW1wb3J0IG9mIGV4cGVyaW1lbnQgcmVzdWx0cyBpbiBSIGRhdGEuZnJhbWUgNCkgRXhwb3J0IHRvIENTViBmaWxlLiAKCkZpcnN0LCBsaWJyYXJpZXMgb2YgZ2FtYXIgYW5kIFhNTCBhcmUgaW1wb3J0ZWQsIGFuZCB0aGUgSW5zdGFsbGF0aW9uIG9mIEdBTUEgaXMgc2V0IHVwLiBOb3RlIHRoYXQgdGhlIHNldHVwIEdBTUEgZ2l2ZXMgYW4gZXJyb3IgZm9yIGEgdmVyc2lvbiBvZiBHQU1BIGxhdGVyIHRoYW4gMS44LCBidXQgdGhpcyBkb2VzIG5vdCBoYXJtIGZ1bmN0aW9uYWxpdHkuIAoKYGBge3J9CiMgTWFrZXMgdXNlIG9mIHRoZSBmb2xsb3dpbmcgbGlicmFyaWVzCmxpYnJhcnkoZ2FtYXIpCmxpYnJhcnkoWE1MKQoKIyBsaW5rIGdhbWFyIHRvIHByZWZlcnJlZCBHQU1BIGluc3RhbGxhdGlvbgpzZXR1cF9nYW1hKCIvaG9tZS9kYWFuL0dBTUEiKTsKYGBgCgojIyBMb2FkaW5nIFhNTCBjcmVhdGlvbiBmdW5jdGlvbgpTZWNvbmRseSwgd2UgaGF2ZSB0byBsb2FkIHRoZSBmdW5jdGlvbiB0aGF0IGF1dG9tYXRpY2FsbHkgY3JlYXRlcyBYTUwgZmlsZXMgdGhhdCBmZWVkIGludG8gdGhlIGNhbGxfZ2FtYSgpIGZ1bmN0aW9uIGZyb20gdGhlIGdhbWFyIGxpYnJhcnkuIFRoZSBYTUwgZmlsZSBwcm92aWRlcyBpbmZvcm1hdGlvbiBmb3IgdGhlIEphdmEgY29tbWFuZCB0byBsYXVuY2ggYSBHQU1BIGV4cGVyaW1lbnQuIFRvIG1ha2UgYW4gZXhwZXJpbWVudCBYTWwgZmlsZSwgd2UgbmVlZCB0aGUgZm9sbG93aW5nIGluZm9ybWF0aW9uOiAKCi0tLQoqIGBzaW5nbGVfcGFyYW1zYDsgQSBzaW5nbGUtbGluZSBkYXRhLmZyYW1lIHdpdGggdGhlIGlucHV0IHBhcmFtZXRlcnMgZm9yIG9uZSBtb2RlbCBydW4uIAoqIGBvYnNgOyBzaW5nbGUtbGluZSBkYXRhLmZyYW1lIHdpdGggb2JzZXJ2YWJsZXMKKiBgc2ltdWxhdGlvbl9pZGA7IHRoZSBudW1iZXIgb2YgdGhlIHNpbXVsYXRpb24sIHJlbGV2YW50IGZvciBydW5uaW5nIG11bHRpcGxlIHJlcGxpY2F0aW9ucwoqIGBtb2RlbF9wYXRoYDsgdGhlIHBhdGggdG8gdGhlIC5nYW1sIGZpbGUgY29udGFpbmluZyB0aGUgbW9kZWwKKiBgZXhwX25hbWVgOyB0aGUgbmFtZSBvZiB0aGUgZXhwZXJpbWVudCBpbiB0aGUgLmdhbWwgZmlsZQoqIGB1bnRpbGA7IHRpbGwgd2hpY2ggY3ljbGUgdGhlIG1vZGVsIHNob3VsZCBydW4KClRoZSBmdW5jdGlvbiBwdXRzIG91dCB0aGUgdGVtcG9yYXJ5IHBhdGggbmFtZSB0byB0aGUgZ2VuZXJhdGVkIFhNTCBmaWxlLiAKCgpgYGB7cn0KIyBGdW5jdGlvbiBjcmVhdGluZyB0ZW1wb3JhcnkgWE1MIHRvIHJ1biB0aGUgZXhwZXJpbWVudCAKY3JlYXRlWE1MIDwtIGZ1bmN0aW9uKHNpbmdsZV9wYXJhbXMsCiAgICAgICAgICAgICAgICAgICAgICBvYnMsCiAgICAgICAgICAgICAgICAgICAgICBzaW11bGF0aW9uX2lkLAogICAgICAgICAgICAgICAgICAgICAgbW9kZWxfcGF0aCwKICAgICAgICAgICAgICAgICAgICAgIGV4cF9uYW1lLAogICAgICAgICAgICAgICAgICAgICAgdW50aWwpIHsKICB0bXBfeG1sID0gdGVtcGZpbGUoZmlsZWV4dCA9ICIueG1sIikKICAKICAjIEVtcHR5IFhNTCB0cmVlCiAgeG1sPC14bWxUcmVlKCkgIyBFbXB0eSBYTUwgdHJlZQogIHhtbCRhZGRUYWcoIkV4cGVyaW1lbnRfcGxhbiIsY2xvc2U9RkFMU0UpICMgRXhwZXJpbWVudCBsYXllcgogIHhtbCRhZGRUYWcoIlNpbXVsYXRpb24iLGNsb3NlPUZBTFNFLCBhdHRycz1jKGlkPXBhc3RlMChzaW11bGF0aW9uX2lkKSwgc291cmNlUGF0aD1wYXN0ZTAobW9kZWxfcGF0aCksIGZpbmFsU3RlcD1wYXN0ZTAodW50aWwpLGV4cGVyaW1lbnQ9cGFzdGUwKGV4cF9uYW1lKSkpICMgU2ltdWxhdGlvbiBsYXllcgogIHhtbCRhZGRUYWcoIlBhcmFtZXRlcnMiLGNsb3NlPUZBTFNFKSAjIFBhcmFtZXRlcnMgbGF5ZXIKICAKICAjIEFkZCBhbGwgcGFyYW1hdGVycyBhbmQgdmFsdWVzIAogIGZvciAoaSBpbiAxOm5jb2woc2luZ2xlX3BhcmFtcykpIHsKICAgIHhtbCRhZGRUYWcoIlBhcmFtZXRlciIsYXR0cnM9YyhuYW1lPWNvbG5hbWVzKHNpbmdsZV9wYXJhbXMpW2ldLHR5cGU9IkZMT0FUIix2YWx1ZT1zaW5nbGVfcGFyYW1zWzEsaV0pKQogIH0KICB4bWwkY2xvc2VUYWcoKQogIAogIHhtbCRhZGRUYWcoIk91dGNvbWVzIixjbG9zZT1GQUxTRSkgIyBPdXRjb21lIGxheWVyCiAgCiAgIyBBZGQgYWxsIG91dGNvbWVzCiAgZm9yIChpIGluIDE6bmNvbChvYnMpKSB7CiAgICB4bWwkYWRkVGFnKCJPdXRwdXQiLGF0dHJzPWMoaWQgPSBwYXN0ZTAoaSksIG5hbWU9Y29sbmFtZXMob2JzKVtpXSxmcmFtZXJhdGU9b2JzWzEsaV0pKQogIH0KICAKICB4bWwkY2xvc2VUYWcoKQogIHhtbCRjbG9zZVRhZygpCiAgeG1sJGNsb3NlVGFnKCkKICAKICBzYXZlWE1MKHhtbCxmaWxlPXRtcF94bWwpCiAgCiAgcmV0dXJuKHRtcF94bWwpCn0KYGBgCgojIyBJbml0aWF0aW5nIFBhcmFtZXRyZXMKQXZvaWRpbmcgc2V0dXAgb2YgZXhwZXJpbWVudHMgdXNpbmcgZ2FtYXIsIHdlIGhhdmUgdG8gbWFudWFsbHkgZGVmaW5lIHBhcmFtZXRlcnMgc3BhY2VzIGFuZCBzdGVwc2l6ZS4gTm90ZSB0aGF0IHRoZXNlIG11c3QgY29ycmVzcG9uZCB3aXRoIHRoZSBwYXJhbWV0ZXJzIGFzIGRlZmluZWQgaW4gdGhlIGV4cGVyaW1lbnQgaW4gdGhlIEdBTUEgbW9kZWwuIAoKYGBge3J9CiMgZGVmaW5lIHRvIGJlIHJlc2VhcmNoZWQgcGFyYW1ldHJlcyBhcyBjKG1pbixtYXgsc3RlcHNpemUpIENIRUNLIElGIChtYXgtbWluKSVzdGVwc2l6ZSA9PSAwICEKI3BhcmFtcyA9IGRhdGEuZnJhbWUoIlBhcmFsbGVsU2VydmVkIj1jKDEsMTAsMSksICJhbHBoYSI9YygwLjEsMC4xLDAuMSksImJldGEiPWMoMS4wLDEuMCwwLjEpLCJnYW1tYSI9YygxLjAsMzAuMCwxLjApKQpwYXJhbXMgPSBkYXRhLmZyYW1lKCJhbHBoYSI9YygwLjAsMC4wLDEuMCksImJldGEiPWMoMS4wLDEuMCwwLjgpLCJnYW1tYSI9Yyg1LjAsNS4wLDEuMCkpCgojIGNyZWF0ZSBmdWxsIGxpc3Qgb2YgYWxsIHRoZSB0byBiZSByZXNlYXJjaGVkIGVudHJpZXMgCnBhcmFtc19saXN0IDwtIHZlY3Rvcihtb2RlPSJsaXN0IiwgbGVuZ3RoPW5jb2wocGFyYW1zKSkKIyBhZGQgbmFtZXMgdG8gbGlzdApuYW1lcyhwYXJhbXNfbGlzdCkgPC0gbmFtZXMocGFyYW1zKQoKZm9yIChwIGluICgxOm5jb2wocGFyYW1zKSkpeyAjIGNyZWF0ZSBsaXN0CiAgbWluIDwtIHBhcmFtc1sxLHBdCiAgbWF4IDwtIHBhcmFtc1syLHBdCiAgc3RlcCA8LSBwYXJhbXNbMyxwXQogIAogIHRtcGxpc3QgPC0gYygpCiAgZm9yIChpIGluIDA6KChtYXgtbWluKS9zdGVwKSkgewogICAgdG1wbGlzdCA8LSBhcHBlbmQodG1wbGlzdCxtaW4rc3RlcCppKQogIH0KICBwYXJhbXNfbGlzdFtbcF1dIDwtIHRtcGxpc3QKfSAKCmBgYAoKTmV4dCwgd2UgaGF2ZSB0byBtYWtlIGEgcGVybXV0YXRpb24gb2YgdGhlIGlucHV0IHBhcmFtZXRlciBsaXN0IGFzIHRoZSBiYXNpcyBmb3IgYW4gZXhoYXVzdGl2ZSBleHBlcmltZW50IChhbGwgY29tYmluYXRpb25zIG9mIHBhcmFtZXRlcnMpLiAKCmBgYHtyfQojIENyZWF0ZSBzYW1wbGVzIGZvciBhbGwgdmFyaWFibGVzICAhISBub3QgYXV0b21hdGljIAojIHBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkUGFyYWxsZWxTZXJ2ZWQscGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSxwYXJhbXNfbGlzdCRnYW1tYSkKcGFyYW1zX3NhbXBsZSA8LSBleHBhbmQuZ3JpZChwYXJhbXNfbGlzdCRhbHBoYSxwYXJhbXNfbGlzdCRiZXRhLHBhcmFtc19saXN0JGdhbW1hKQpuYW1lcyhwYXJhbXNfc2FtcGxlKSA8LSBuYW1lcyhwYXJhbXMpCmBgYAoKTmV4dCwgd2UgaGF2ZSB0byBzZXQgb3VyIG9ic2VydmFibGVzIGluIGEgZGF0YS5mcmFtZS4gVGhlIG5hbWVzIG11c3QgY29ycmVzcG9uZCB3aXRoIHRoZSBvYnNlcnZhdGlvbnMgYXMgZGVmaW5lZCBpbiB0aGUgZXhwZXJpbWVudCBpbiB0aGUgR0FNQSBtb2RlbC4gVGhlIHZhbHVlIGl0IGVxdWFscyB0aGUgZnJhbWVyYXRlOiBmcmFtZXJhdGUgb2YgMTAgbWVhbnMgZmV0Y2hpbmcgdGhlIG91dHB1dCB2YWx1ZXMgZXZlcnkgMTAgdGlja3MuIAoKYGBge3J9CiMgY3JlYXRlIGRhdGFmcmFtZSBmb3Igb2JzZXJ2YXRpb25zIGFuZCBjb3JyZXNwb25kaW5nIGZyYW1lcmF0ZSAKIyBvYnMgPSBkYXRhLmZyYW1lKCJ0aWNrIj0xLCJBdmVyYWdlRGVsaXZlcnlTaXplIj0xLCJRdWV1ZUxlbmd0aCI9MSwiRmFjaWxpdHlTdG9yYWdlIj0xKQpvYnMgPSBkYXRhLmZyYW1lKCJ0aWNrIj0xLCJBdmVyYWdlRW1vdGlvbmFsU3RhdGUiPTEpCmBgYAoKTmV4dCwgd2Ugc2V0IHRoZSBpbnB1dCBwYXJhbWV0ZXJzIHRoYXQgd2lsbCBmZWVkIGludG8gdGhlIGBjcmVhdGVYTUxgIGZ1bmN0aW9uCgpgYGB7cn0KIyBzZXQgcGF0aCB0byBtb2RlbCBmaWxlIAojcGF0aCA9ICIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vZmFjaWxpdHlfdmVyaWZpY2F0aW9uL2ZhY2lsaXRpZXNfdGVzdC5nYW1sIgojIHBhdGggPSAiL2hvbWUvZGFhbi9HQU1BL3dvcmtzcGFjZS9GQVRNX0FCTS9tYWluL2hvdXNlaG9sZF92ZXJpZmljYXRpb24vaG91c2Vob2xkX3Rlc3QuZ2FtbCIKcGF0aCA9ICIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vaG91c2Vob2xkX3ZlcmlmaWNhdGlvbi9uZXR3b3JrX3Rlc3QuZ2FtbCIKCiMgZ2l2ZSBleHBlcmltZW50IG5hbWUgCmV4cF9uYW1lID0gIk5ldHdvcmtTdGFydGxlIgoKIyB0aWxsIHdoYXQgdGljayAKY3ljbGVzX2luX2RheSA8LSA2KjI0CmRheXNfcnVudGltZTwtMzAKdW50aWwgPSBwYXN0ZTAoY3ljbGVzX2luX2RheSpkYXlzX3J1bnRpbWUpCgpyZXBsaWNhdGlvbnMgPC0gMQoKYGBgCgoKIyMgUnVubmluZyB0aGUgbW9kZWwKCkxhc3RseSwgd2UgaW5pdGlhbGlzZSB0aGUgZGF0YS5mcmFtZSBpbiB3aGljaCBhbGwgcmVzdWx0cyArIGlucHV0IHBhcmFtZXRyZXMgd2lsbCBiZSBzdG9yZWQgYXMgTlVMTC4gRm9yIGV2ZXJ5IHJvdyBpbiB0aGUgcGVybXV0YXRpb24gbGlzdCBgcGFyYW1zX3NhbXBsZWAgYW5kIGZvciB0aGUgbnVtYmVyIG9mIHJlcGxpY2F0aW9ucyBgcmVwbGljYXRpb25zYCB0aGUgbW9kZWwgaXMgaW5pdGlhbGlzZWQgYW5kIHRoZSByZXN1bHRzIGRlZmluZWQgaW4gYG9ic2AgYXJlIHN0b3JlZCBpbiB0aGUgYHRvdGFsX2RmYC4gCgpgYGB7cn0KdGIgPC0gU3lzLnRpbWUoKQoKIyBlbXB0eSBkZiAKdG90YWxfZGYgPC0gTlVMTAoKIyBmb3IgdGhlIGVudGlyZSBzYW1wbGUgbGlzdCAKZm9yIChydW4gaW4gMTpucm93KHBhcmFtc19zYW1wbGUpKXsKICAKICBmb3IgKHJlcGxpY2F0aW9uIGluIDE6cmVwbGljYXRpb25zKXsKICAgIAogICAgc2ltdWxhdGlvbl9pZDwtcGFzdGUwKHJlcGxpY2F0aW9uKQogICAgCiAgICAjIHRlbXBvcmFyeSBleHBlcmltZW50IHhtbAogICAgdG1wX3htbCA8LSBjcmVhdGVYTUwoc2luZ2xlX3BhcmFtcyA9IHBhcmFtc19zYW1wbGVbcnVuLF0sb2JzPW9icyxzaW11bGF0aW9uX2lkID0gc2ltdWxhdGlvbl9pZCxtb2RlbF9wYXRoID0gcGF0aCxleHBfbmFtZSA9ICAgZXhwX25hbWUsdW50aWw9dW50aWwpCiAgICB0bXBfZGlyIDwtIHRlbXBkaXIoKSAjIHRlbXBvcmFyeSBkaXIgdG8gc3RvcmUgb3V0Y29tZSB4bWwKICAgIG1lc3NhZ2UoImNhbGwgZ2FtYSBtb2RlbCIpCiAgCiAgICBjYWxsX2dhbWEodG1wX3htbCxocGM9MixvdXRwdXRfZGlyID0gdG1wX2RpcikgIyBydW4gZ2FtYSBtb2RlbAogICAgCiAgICBtZXNzYWdlKCJpbXBvcnQgb3V0Y29tZSB4bWwiKQogICAgIyBpbXBvcnQgb3V0Y29tZSB4bWwgCiAgICB0bXBfZGY8LVhNTDo6eG1sVG9EYXRhRnJhbWUoWE1MOjp4bWxQYXJzZShwYXN0ZTAodG1wX2RpciwiLyIsInNpbXVsYXRpb24tb3V0cHV0cyIsc2ltdWxhdGlvbl9pZCwiLnhtbCIpKSwgc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKQogICAgIyBhZGQgY29sdW1uIG5hbWVzCiAgICBuYW1lcyh0bXBfZGYpPC1jb2xuYW1lcyhvYnMpCiAgICAKICAgICMgZGVsZXRlIHRlbXBvcmFyeSB4bWwgZmlsZXMKICAgIHVubGluayhwYXN0ZTAodG1wX2RpciwiLyIsInNpbXVsYXRpb24tb3V0cHV0cyIsc2ltdWxhdGlvbl9pZCwiLnhtbCIpKQogICAgdW5saW5rKHRtcF94bWwpCiAgICAKICAgICMgYWRkIGlucHV0IHBhcmFtZXRlcnMgdG8gZGYKICAgIGZvciAocCBpbiAxOm5jb2wocGFyYW1zX3NhbXBsZSkpewogICAgICB0bXBjb2wgPC0gcmVwKHBhcmFtc19zYW1wbGVbcnVuLHBdLHVudGlsKQogICAgICAKICAgICAgdG1wX2RmIDwtIGNiaW5kKHRtcGNvbCx0bXBfZGYpCiAgICAgIG5hbWVzKHRtcF9kZilbMV0gPC0gbmFtZXMocGFyYW1zX3NhbXBsZSlbcF0KICAgIH0KICAgIAogICAgdG1wY29sIDwtIHJlcChzaW11bGF0aW9uX2lkLHVudGlsKQogICAgCiAgICB0bXBfZGYgPC0gY2JpbmQodG1wY29sLHRtcF9kZikKICAgIG5hbWVzKHRtcF9kZilbMV0gPC0gIlJlcGxpY2F0aW9uIgogIAogICAgIyBhZGQgdG8gZXhpc3RpbmcgZGF0YWZyYW1lIAogICAgaWYgKGlzLm51bGwodG90YWxfZGYpKXsKICAgICAgdG90YWxfZGY8LXRtcF9kZgogICAgfSBlbHNlewogICAgICB0b3RhbF9kZiA8LSByYmluZCh0b3RhbF9kZiwgdG1wX2RmKQogICAgfQogIH0KfQoKCiMgV3JpdGUgcmVzdWx0cyB0byBjc3YKd3JpdGUuY3N2KHRvdGFsX2RmLHBhc3RlMCgiL2hvbWUvZGFhbi9EZXNrdG9wLyIsZXhwX25hbWUsIi5jc3YiKSkKCnRhIDwtIFN5cy50aW1lKCkKCm1lc3NhZ2UoInRvb2sgbWUgIix0YS10YikKYGBgCgpOb3cgd2UgY2FuIHRha2UgYSBsb29rIGF0IHRoZSByZXN1bHRzOgoKYGBge3J9CnByaW50KHRvdGFsX2RmKQpgYGAKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2FtcGxpbmcgR0FNTCBtb2RlbCBhbmQgc3RvcmluZyBpbiBkYXRhLmZyYW1lIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCiMjIFNldHRpbmcgdXAgR0FNQSAKClIgbm90ZWJvb2sgdG8gdXNlIFIgaW4gcmVsYXRpb24gd2l0aCBzYW1wbGluZyBHQU1BLiBGdW5jdGlvbnMgYXJlOiAxKSBhdXRvbWF0aWMgY3JlYXRpbmcgWE1MIEV4cGVyaW1lbnQgZmlsZXMsIDIpIGNvbW11bmljYXRpb24gd2l0aCBHQU1BLCAzKSBBdXRvbWF0aWMgaW1wb3J0IG9mIGV4cGVyaW1lbnQgcmVzdWx0cyBpbiBSIGRhdGEuZnJhbWUgNCkgRXhwb3J0IHRvIENTViBmaWxlLiAKCkZpcnN0LCBsaWJyYXJpZXMgb2YgZ2FtYXIgYW5kIFhNTCBhcmUgaW1wb3J0ZWQsIGFuZCB0aGUgSW5zdGFsbGF0aW9uIG9mIEdBTUEgaXMgc2V0IHVwLiBOb3RlIHRoYXQgdGhlIHNldHVwIEdBTUEgZ2l2ZXMgYW4gZXJyb3IgZm9yIGEgdmVyc2lvbiBvZiBHQU1BIGxhdGVyIHRoYW4gMS44LCBidXQgdGhpcyBkb2VzIG5vdCBoYXJtIGZ1bmN0aW9uYWxpdHkuIAoKYGBge3J9CiMgTWFrZXMgdXNlIG9mIHRoZSBmb2xsb3dpbmcgbGlicmFyaWVzCmxpYnJhcnkoZ2FtYXIpCmxpYnJhcnkoWE1MKQoKIyBsaW5rIGdhbWFyIHRvIHByZWZlcnJlZCBHQU1BIGluc3RhbGxhdGlvbgpzZXR1cF9nYW1hKCIvaG9tZS9kYWFuL0dBTUEiKTsKYGBgCgojIyBMb2FkaW5nIFhNTCBjcmVhdGlvbiBmdW5jdGlvbgpTZWNvbmRseSwgd2UgaGF2ZSB0byBsb2FkIHRoZSBmdW5jdGlvbiB0aGF0IGF1dG9tYXRpY2FsbHkgY3JlYXRlcyBYTUwgZmlsZXMgdGhhdCBmZWVkIGludG8gdGhlIGNhbGxfZ2FtYSgpIGZ1bmN0aW9uIGZyb20gdGhlIGdhbWFyIGxpYnJhcnkuIFRoZSBYTUwgZmlsZSBwcm92aWRlcyBpbmZvcm1hdGlvbiBmb3IgdGhlIEphdmEgY29tbWFuZCB0byBsYXVuY2ggYSBHQU1BIGV4cGVyaW1lbnQuIFRvIG1ha2UgYW4gZXhwZXJpbWVudCBYTWwgZmlsZSwgd2UgbmVlZCB0aGUgZm9sbG93aW5nIGluZm9ybWF0aW9uOiAKCi0tLQoqIGBzaW5nbGVfcGFyYW1zYDsgQSBzaW5nbGUtbGluZSBkYXRhLmZyYW1lIHdpdGggdGhlIGlucHV0IHBhcmFtZXRlcnMgZm9yIG9uZSBtb2RlbCBydW4uIAoqIGBvYnNgOyBzaW5nbGUtbGluZSBkYXRhLmZyYW1lIHdpdGggb2JzZXJ2YWJsZXMKKiBgc2ltdWxhdGlvbl9pZGA7IHRoZSBudW1iZXIgb2YgdGhlIHNpbXVsYXRpb24sIHJlbGV2YW50IGZvciBydW5uaW5nIG11bHRpcGxlIHJlcGxpY2F0aW9ucwoqIGBtb2RlbF9wYXRoYDsgdGhlIHBhdGggdG8gdGhlIC5nYW1sIGZpbGUgY29udGFpbmluZyB0aGUgbW9kZWwKKiBgZXhwX25hbWVgOyB0aGUgbmFtZSBvZiB0aGUgZXhwZXJpbWVudCBpbiB0aGUgLmdhbWwgZmlsZQoqIGB1bnRpbGA7IHRpbGwgd2hpY2ggY3ljbGUgdGhlIG1vZGVsIHNob3VsZCBydW4KClRoZSBmdW5jdGlvbiBwdXRzIG91dCB0aGUgdGVtcG9yYXJ5IHBhdGggbmFtZSB0byB0aGUgZ2VuZXJhdGVkIFhNTCBmaWxlLiAKCgpgYGB7cn0KIyBGdW5jdGlvbiBjcmVhdGluZyB0ZW1wb3JhcnkgWE1MIHRvIHJ1biB0aGUgZXhwZXJpbWVudCAKY3JlYXRlWE1MIDwtIGZ1bmN0aW9uKHNpbmdsZV9wYXJhbXMsCiAgICAgICAgICAgICAgICAgICAgICBvYnMsCiAgICAgICAgICAgICAgICAgICAgICBzaW11bGF0aW9uX2lkLAogICAgICAgICAgICAgICAgICAgICAgbW9kZWxfcGF0aCwKICAgICAgICAgICAgICAgICAgICAgIGV4cF9uYW1lLAogICAgICAgICAgICAgICAgICAgICAgdW50aWwpIHsKICB0bXBfeG1sID0gdGVtcGZpbGUoZmlsZWV4dCA9ICIueG1sIikKICAKICAjIEVtcHR5IFhNTCB0cmVlCiAgeG1sPC14bWxUcmVlKCkgIyBFbXB0eSBYTUwgdHJlZQogIHhtbCRhZGRUYWcoIkV4cGVyaW1lbnRfcGxhbiIsY2xvc2U9RkFMU0UpICMgRXhwZXJpbWVudCBsYXllcgogIHhtbCRhZGRUYWcoIlNpbXVsYXRpb24iLGNsb3NlPUZBTFNFLCBhdHRycz1jKGlkPXBhc3RlMChzaW11bGF0aW9uX2lkKSwgc291cmNlUGF0aD1wYXN0ZTAobW9kZWxfcGF0aCksIGZpbmFsU3RlcD1wYXN0ZTAodW50aWwpLGV4cGVyaW1lbnQ9cGFzdGUwKGV4cF9uYW1lKSkpICMgU2ltdWxhdGlvbiBsYXllcgogIHhtbCRhZGRUYWcoIlBhcmFtZXRlcnMiLGNsb3NlPUZBTFNFKSAjIFBhcmFtZXRlcnMgbGF5ZXIKICAKICAjIEFkZCBhbGwgcGFyYW1hdGVycyBhbmQgdmFsdWVzIAogIGZvciAoaSBpbiAxOm5jb2woc2luZ2xlX3BhcmFtcykpIHsKICAgIHhtbCRhZGRUYWcoIlBhcmFtZXRlciIsYXR0cnM9YyhuYW1lPWNvbG5hbWVzKHNpbmdsZV9wYXJhbXMpW2ldLHR5cGU9IkZMT0FUIix2YWx1ZT1zaW5nbGVfcGFyYW1zWzEsaV0pKQogIH0KICB4bWwkY2xvc2VUYWcoKQogIAogIHhtbCRhZGRUYWcoIk91dGNvbWVzIixjbG9zZT1GQUxTRSkgIyBPdXRjb21lIGxheWVyCiAgCiAgIyBBZGQgYWxsIG91dGNvbWVzCiAgZm9yIChpIGluIDE6bmNvbChvYnMpKSB7CiAgICB4bWwkYWRkVGFnKCJPdXRwdXQiLGF0dHJzPWMoaWQgPSBwYXN0ZTAoaSksIG5hbWU9Y29sbmFtZXMob2JzKVtpXSxmcmFtZXJhdGU9b2JzWzEsaV0pKQogIH0KICAKICB4bWwkY2xvc2VUYWcoKQogIHhtbCRjbG9zZVRhZygpCiAgeG1sJGNsb3NlVGFnKCkKICAKICBzYXZlWE1MKHhtbCxmaWxlPXRtcF94bWwpCiAgCiAgcmV0dXJuKHRtcF94bWwpCn0KYGBgCgojIyBJbml0aWF0aW5nIFBhcmFtZXRyZXMKQXZvaWRpbmcgc2V0dXAgb2YgZXhwZXJpbWVudHMgdXNpbmcgZ2FtYXIsIHdlIGhhdmUgdG8gbWFudWFsbHkgZGVmaW5lIHBhcmFtZXRlcnMgc3BhY2VzIGFuZCBzdGVwc2l6ZS4gTm90ZSB0aGF0IHRoZXNlIG11c3QgY29ycmVzcG9uZCB3aXRoIHRoZSBwYXJhbWV0ZXJzIGFzIGRlZmluZWQgaW4gdGhlIGV4cGVyaW1lbnQgaW4gdGhlIEdBTUEgbW9kZWwuIAoKYGBge3J9CiMgZGVmaW5lIHRvIGJlIHJlc2VhcmNoZWQgcGFyYW1ldHJlcyBhcyBjKG1pbixtYXgsc3RlcHNpemUpIENIRUNLIElGIChtYXgtbWluKSVzdGVwc2l6ZSA9PSAwICEKCnBhcmFtcyA9IGRhdGEuZnJhbWUoImFscGhhIj1jKDAuMSwwLjEsMC40KSwiYmV0YSI9YygwLDEuMCwxLjApLCAiUGFyYWxsZWxTZXJ2ZWQiPWMoMSw1LDQpLCAiZ2FtbWEiPWMoMSwxMSw1KSwiZXBzaWxvbiI9YygwLDEuMCwwLjUpKSAgIyBRdWV1ZSB0ZXN0aW5nCiMgcGFyYW1zID0gZGF0YS5mcmFtZSgiUGFyYWxsZWxTZXJ2ZWQiPWMoMSwxMCwxKSwgImdhbW1hIj1jKDAsMzAuMCwxMCkpICMgRmFjaWxpdHkgdGVzdGluZwoKIyBwYXJhbXMgPSBkYXRhLmZyYW1lKCJhbHBoYSI9YygwLjAsMS4wLDEuMCksImJldGEiPWMoMCwxLjAsMS4wKSwiYXZnX3BjIj1jKDAsMS4wLDEuMCkpICMgbmV0d29yayB0ZXN0aW5nIGZvciBleHRyZW1lIHZhbHVlcwojIHBhcmFtcyA9IGRhdGEuZnJhbWUoImFscGhhIj1jKDAuMSwwLjUsMC40KSwiYmV0YSI9YygwLDEuMCwwLjUpKSAjIG5ldHdvcmsgdGVzdGluZyBzYW1wbGluZwoKI3BhcmFtcyA9IGRhdGEuZnJhbWUoImFscGhhIj1jKDAuMSwwLjEsMS4wKSwiZ2FtbWEiPWMoMC4wLDMwLjAsMTAuMCkpICMgaW5kaXZpZHVhbCBob3VzZWhvbGQgdGVzdGluZwoKCiMgY3JlYXRlIGZ1bGwgbGlzdCBvZiBhbGwgdGhlIHRvIGJlIHJlc2VhcmNoZWQgZW50cmllcyAKcGFyYW1zX2xpc3QgPC0gdmVjdG9yKG1vZGU9Imxpc3QiLCBsZW5ndGg9bmNvbChwYXJhbXMpKQojIGFkZCBuYW1lcyB0byBsaXN0Cm5hbWVzKHBhcmFtc19saXN0KSA8LSBuYW1lcyhwYXJhbXMpCgpmb3IgKHAgaW4gKDE6bmNvbChwYXJhbXMpKSl7ICMgY3JlYXRlIGxpc3QKICBtaW4gPC0gcGFyYW1zWzEscF0KICBtYXggPC0gcGFyYW1zWzIscF0KICBzdGVwIDwtIHBhcmFtc1szLHBdCiAgCiAgdG1wbGlzdCA8LSBjKCkKICBmb3IgKGkgaW4gMDooKG1heC1taW4pL3N0ZXApKSB7CiAgICB0bXBsaXN0IDwtIGFwcGVuZCh0bXBsaXN0LG1pbitzdGVwKmkpCiAgfQogIHBhcmFtc19saXN0W1twXV0gPC0gdG1wbGlzdAp9IAoKYGBgCgpOZXh0LCB3ZSBoYXZlIHRvIG1ha2UgYSBwZXJtdXRhdGlvbiBvZiB0aGUgaW5wdXQgcGFyYW1ldGVyIGxpc3QgYXMgdGhlIGJhc2lzIGZvciBhbiBleGhhdXN0aXZlIGV4cGVyaW1lbnQgKGFsbCBjb21iaW5hdGlvbnMgb2YgcGFyYW1ldGVycykuIAoKYGBge3J9CiMgQ3JlYXRlIHNhbXBsZXMgZm9yIGFsbCB2YXJpYWJsZXMgICEhIG5vdCBhdXRvbWF0aWMgCnBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSxwYXJhbXNfbGlzdCRQYXJhbGxlbFNlcnZlZCxwYXJhbXNfbGlzdCRnYW1tYSxwYXJhbXNfbGlzdCRlcHNpbG9uKSAjIFF1ZXVlIHRlc3RpbmcKIyBwYXJhbXNfc2FtcGxlIDwtIGV4cGFuZC5ncmlkKHBhcmFtc19saXN0JFBhcmFsbGVsU2VydmVkLHBhcmFtc19saXN0JGFscGhhLHBhcmFtc19saXN0JGJldGEscGFyYW1zX2xpc3QkZ2FtbWEpCgojIHBhcmFtc19zYW1wbGUgPC0gZXhwYW5kLmdyaWQocGFyYW1zX2xpc3QkYWxwaGEscGFyYW1zX2xpc3QkYmV0YSxwYXJhbXNfbGlzdCRhdmdfcGMpICMgbmV0d29yayB0ZXN0aW5nIGV4dHJlbWUgdmFsdWVzCiMgcGFyYW1zX3NhbXBsZSA8LSBleHBhbmQuZ3JpZChwYXJhbXNfbGlzdCRhbHBoYSxwYXJhbXNfbGlzdCRiZXRhKSAjIG5ldHdvcmsgdGVzdGluZyBzYW1wbGluZwoKIyBwYXJhbXNfc2FtcGxlIDwtIGV4cGFuZC5ncmlkKHBhcmFtc19saXN0JGFscGhhLHBhcmFtc19saXN0JGdhbW1hKSAjIGluZGl2aWR1YWwgaG91c2Vob2xkIHRlc3RpbmcgCm5hbWVzKHBhcmFtc19zYW1wbGUpIDwtIG5hbWVzKHBhcmFtcykKYGBgCgpOZXh0LCB3ZSBoYXZlIHRvIHNldCBvdXIgb2JzZXJ2YWJsZXMgaW4gYSBkYXRhLmZyYW1lLiBUaGUgbmFtZXMgbXVzdCBjb3JyZXNwb25kIHdpdGggdGhlIG9ic2VydmF0aW9ucyBhcyBkZWZpbmVkIGluIHRoZSBleHBlcmltZW50IGluIHRoZSBHQU1BIG1vZGVsLiBUaGUgdmFsdWUgaXQgZXF1YWxzIHRoZSBmcmFtZXJhdGU6IGZyYW1lcmF0ZSBvZiAxMCBtZWFucyBmZXRjaGluZyB0aGUgb3V0cHV0IHZhbHVlcyBldmVyeSAxMCB0aWNrcy4gCgpgYGB7cn0KIyBjcmVhdGUgZGF0YWZyYW1lIGZvciBvYnNlcnZhdGlvbnMgYW5kIGNvcnJlc3BvbmRpbmcgZnJhbWVyYXRlIAojIG9icyA9IGRhdGEuZnJhbWUoInRpY2siPTEsIkF2ZXJhZ2VFbW90aW9uYWxTdGF0ZSI9MSwiRW1vdGlvbmFsU3RhdGUiPTEpICMgTmV0d29yayB0ZXN0aW5nIAojIG9icyA9IGRhdGEuZnJhbWUoInRpY2siPTEsIkVtb3Rpb25hbFN0YXRlIj0xLCJGb29kSW5TdG9yYWdlIj0xKSAjIEluZGl2aWR1YWwgaG91c2Vob2xkIHRlc3RpbmcKIyBvYnMgPSBkYXRhLmZyYW1lKCJ0aWNrIj0xLCJBdmVyYWdlRGVsaXZlcnlTaXplIj0xLCJRdWV1ZUxlbmd0aCI9MSwiRmFjaWxpdHlTdG9yYWdlIj0xKQpvYnMgPSBkYXRhLmZyYW1lKCJ0aWNrIj0xLCJBdmVyYWdlRGVsaXZlcnlTaXplIj0xLCJRdWV1ZUxlbmd0aCI9MSwiRmFjaWxpdHlTdG9yYWdlIj0xLCJBdmVyYWdlRW1vdGlvbmFsU3RhdGUiPTEpCgpgYGAKCk5leHQsIHdlIHNldCB0aGUgaW5wdXQgcGFyYW1ldGVycyB0aGF0IHdpbGwgZmVlZCBpbnRvIHRoZSBgY3JlYXRlWE1MYCBmdW5jdGlvbgoKYGBge3J9CiMgc2V0IHBhdGggdG8gbW9kZWwgZmlsZSAKcGF0aCA9ICIvaG9tZS9kYWFuL0dBTUEvd29ya3NwYWNlL0ZBVE1fQUJNL21haW4vZmFjaWxpdHlfdmVyaWZpY2F0aW9uL1FSZWFjdGlvbl90ZXN0LmdhbWwiCiNwYXRoID0gIi9ob21lL2RhYW4vR0FNQS93b3Jrc3BhY2UvRkFUTV9BQk0vbWFpbi9mYWNpbGl0eV92ZXJpZmljYXRpb24vZmFjaWxpdGllc190ZXN0LmdhbWwiCgojIHBhdGggPSAiL2hvbWUvZGFhbi9HQU1BL3dvcmtzcGFjZS9GQVRNX0FCTS9tYWluL2hvdXNlaG9sZF92ZXJpZmljYXRpb24vaG91c2Vob2xkX3Rlc3QuZ2FtbCIKIyBwYXRoID0gIi9ob21lL2RhYW4vR0FNQS93b3Jrc3BhY2UvRkFUTV9BQk0vbWFpbi9ob3VzZWhvbGRfdmVyaWZpY2F0aW9uL25ldHdvcmtfdGVzdC5nYW1sIgoKIyBnaXZlIGV4cGVyaW1lbnQgbmFtZSAKIyBleHBfbmFtZSA9ICJOb1N0YXJ0bGUiCiMgZXhwX25hbWUgPSAiTmV0d29ya1N0YXJ0bGUiCmV4cF9uYW1lID0gIkZhY2lsaXR5VG9Ib3VzZWhvbGRzIgoKIyB0aWxsIHdoYXQgdGljayAKY3ljbGVzX2luX2RheSA8LSA2KjI0CmRheXNfcnVudGltZTwtMzAKdW50aWwgPSBwYXN0ZTAoY3ljbGVzX2luX2RheSpkYXlzX3J1bnRpbWUpCgpyZXBsaWNhdGlvbnMgPC0gMQoKYGBgCgoKIyMgUnVubmluZyB0aGUgbW9kZWwKCkxhc3RseSwgd2UgaW5pdGlhbGlzZSB0aGUgZGF0YS5mcmFtZSBpbiB3aGljaCBhbGwgcmVzdWx0cyArIGlucHV0IHBhcmFtZXRyZXMgd2lsbCBiZSBzdG9yZWQgYXMgTlVMTC4gRm9yIGV2ZXJ5IHJvdyBpbiB0aGUgcGVybXV0YXRpb24gbGlzdCBgcGFyYW1zX3NhbXBsZWAgYW5kIGZvciB0aGUgbnVtYmVyIG9mIHJlcGxpY2F0aW9ucyBgcmVwbGljYXRpb25zYCB0aGUgbW9kZWwgaXMgaW5pdGlhbGlzZWQgYW5kIHRoZSByZXN1bHRzIGRlZmluZWQgaW4gYG9ic2AgYXJlIHN0b3JlZCBpbiB0aGUgYHRvdGFsX2RmYC4gCgpgYGB7cn0KdGIgPC0gU3lzLnRpbWUoKQoKIyBlbXB0eSBkZiAKdG90YWxfZGYgPC0gTlVMTAoKIyBmb3IgdGhlIGVudGlyZSBzYW1wbGUgbGlzdCAKZm9yIChydW4gaW4gMTpucm93KHBhcmFtc19zYW1wbGUpKXsKICBmb3IgKHJlcGxpY2F0aW9uIGluIDE6cmVwbGljYXRpb25zKXsKICAgIHNpbXVsYXRpb25faWQ8LXBhc3RlMChyZXBsaWNhdGlvbikKICAgIAogICAgIyB0ZW1wb3JhcnkgZXhwZXJpbWVudCB4bWwKICAgIHRtcF94bWwgPC0gY3JlYXRlWE1MKHNpbmdsZV9wYXJhbXMgPSBwYXJhbXNfc2FtcGxlW3J1bixdLG9icz1vYnMsc2ltdWxhdGlvbl9pZCA9IHNpbXVsYXRpb25faWQsbW9kZWxfcGF0aCA9IHBhdGgsZXhwX25hbWUgPSAgIGV4cF9uYW1lLHVudGlsPXVudGlsKQogICAgdG1wX2RpciA8LSB0ZW1wZGlyKCkgIyB0ZW1wb3JhcnkgZGlyIHRvIHN0b3JlIG91dGNvbWUgeG1sCiAgICBtZXNzYWdlKCJjYWxsIGdhbWEgbW9kZWwiKQogIAogICAgY2FsbF9nYW1hKHRtcF94bWwsaHBjPTIsb3V0cHV0X2RpciA9IHRtcF9kaXIpICMgcnVuIGdhbWEgbW9kZWwKICAgIAogICAgbWVzc2FnZSgiaW1wb3J0IG91dGNvbWUgeG1sIikKICAgICMgaW1wb3J0IG91dGNvbWUgeG1sIAogICAgdG1wX2RmPC1YTUw6OnhtbFRvRGF0YUZyYW1lKFhNTDo6eG1sUGFyc2UocGFzdGUwKHRtcF9kaXIsIi8iLCJzaW11bGF0aW9uLW91dHB1dHMiLHNpbXVsYXRpb25faWQsIi54bWwiKSksIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkKICAgICMgYWRkIGNvbHVtbiBuYW1lcwogICAgbmFtZXModG1wX2RmKTwtY29sbmFtZXMob2JzKQogICAgCiAgICAjIGRlbGV0ZSB0ZW1wb3JhcnkgeG1sIGZpbGVzCiAgICB1bmxpbmsocGFzdGUwKHRtcF9kaXIsIi8iLCJzaW11bGF0aW9uLW91dHB1dHMiLHNpbXVsYXRpb25faWQsIi54bWwiKSkKICAgIHVubGluayh0bXBfeG1sKQogICAgCiAgICAjIGFkZCBpbnB1dCBwYXJhbWV0ZXJzIHRvIGRmCiAgICBmb3IgKHAgaW4gMTpuY29sKHBhcmFtc19zYW1wbGUpKXsKICAgICAgdG1wY29sIDwtIHJlcChwYXJhbXNfc2FtcGxlW3J1bixwXSx1bnRpbCkKICAgICAgCiAgICAgIHRtcF9kZiA8LSBjYmluZCh0bXBjb2wsdG1wX2RmKQogICAgICBuYW1lcyh0bXBfZGYpWzFdIDwtIG5hbWVzKHBhcmFtc19zYW1wbGUpW3BdCiAgICB9CiAgICAKICAgIHRtcGNvbCA8LSByZXAoc2ltdWxhdGlvbl9pZCx1bnRpbCkKICAgIAogICAgdG1wX2RmIDwtIGNiaW5kKHRtcGNvbCx0bXBfZGYpCiAgICBuYW1lcyh0bXBfZGYpWzFdIDwtICJSZXBsaWNhdGlvbiIKICAKICAgICMgYWRkIHRvIGV4aXN0aW5nIGRhdGFmcmFtZSAKICAgIGlmIChpcy5udWxsKHRvdGFsX2RmKSl7CiAgICAgIHRvdGFsX2RmPC10bXBfZGYKICAgIH0gZWxzZXsKICAgICAgdG90YWxfZGYgPC0gcmJpbmQodG90YWxfZGYsIHRtcF9kZikKICAgIH0KICB9Cn0KCgojIFdyaXRlIHJlc3VsdHMgdG8gY3N2CndyaXRlLmNzdih0b3RhbF9kZixwYXN0ZTAoIi9ob21lL2RhYW4vRGVza3RvcC8iLGV4cF9uYW1lLCIuY3N2IikpCgp0YSA8LSBTeXMudGltZSgpCgptZXNzYWdlKCJ0b29rIG1lICIsdGEtdGIpCmBgYAoKTm93IHdlIGNhbiB0YWtlIGEgbG9vayBhdCB0aGUgcmVzdWx0czoKCmBgYHtyfQpwcmludCh0b3RhbF9kZikKYGBgCgoK</div>
 
 
 

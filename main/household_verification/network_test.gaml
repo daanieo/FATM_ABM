@@ -19,6 +19,8 @@ global {
 //	Experiment-variable and potential vital variable
 	bool startle <- true; 	
 	int avg_hh_size <-5;
+	float avg_pc <- 0.5; 
+	
 		
 //	Time-related constants
 	date starting_date <- date("2021-01-01 00:00:00");	
@@ -40,10 +42,12 @@ global {
 	init {
 		
 
-		csv_file f <- csv_file("sparsely_matrix.csv");
+		csv_file f <- csv_file("fully_matrix.csv");
 		matrix sn_matrix <- matrix(f);
 				
 		int nb_households<-20;
+		
+		
 		
 //		Create household agents
 		create households number: nb_households{	
@@ -55,15 +59,11 @@ global {
 			
 //			Specific constants
 			nb_members <- rnd(1,avg_hh_size*2+1);
-			pc<- rnd(0,10)/10;		
-			
-			
-			
-			
+			pc<- rnd(0,avg_pc*2)/10;		
+					
 //			Initialise variables	
 			unsatisfied_consumption <- 0.0;
 			unsatisfied_demand <- 0.0;
-			tickwise_emotional_state <- [];
 					
 			food_storage <- ration/30 * gamma * nb_members;			// initial food storage 
 			emotional_state <- 0;
@@ -84,12 +84,7 @@ global {
 		}
 	}
 	
-	reflex fetch_statistics {
-		add households mean_of each.emotional_state to: average_emotional_states;	
-		add households sum_of each.food_storage to: summed_food_storage;
-		add households sum_of each.unsatisfied_demand to: summed_demanded_food; // unsatisfied demand as temporary container 	 
-		
-	}
+	
 	
 }
 
@@ -140,6 +135,7 @@ experiment NetworkStartle type: gui {
 	parameter "alpha" var: alpha;
 	parameter "beta" var: beta;
 	parameter "gamma" var: gamma; 
+	parameter "avg_pc" var: avg_pc;
 	output{monitor "AverageEmotionalState" value: households mean_of each.emotional_state;
 			monitor "tick" value: cycle;
 			monitor "EmotionalState" value: households[0].emotional_state;		

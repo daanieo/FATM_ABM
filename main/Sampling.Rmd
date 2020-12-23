@@ -75,8 +75,15 @@ Avoiding setup of experiments using gamar, we have to manually define parameters
 
 ```{r}
 # define to be researched parametres as c(min,max,stepsize) CHECK IF (max-min)%stepsize == 0 !
-#params = data.frame("ParallelServed"=c(1,10,1), "alpha"=c(0.1,0.1,0.1),"beta"=c(1.0,1.0,0.1),"gamma"=c(1.0,30.0,1.0))
-params = data.frame("alpha"=c(0.0,0.0,1.0),"beta"=c(1.0,1.0,0.8),"gamma"=c(5.0,5.0,1.0))
+
+params = data.frame("alpha"=c(0.1,0.1,0.4),"beta"=c(0,1.0,1.0), "ParallelServed"=c(1,5,4), "gamma"=c(1,11,5),"epsilon"=c(0,1.0,0.5))  # Queue testing
+# params = data.frame("ParallelServed"=c(1,10,1), "gamma"=c(0,30.0,10)) # Facility testing
+
+# params = data.frame("alpha"=c(0.0,1.0,1.0),"beta"=c(0,1.0,1.0),"avg_pc"=c(0,1.0,1.0)) # network testing for extreme values
+# params = data.frame("alpha"=c(0.1,0.5,0.4),"beta"=c(0,1.0,0.5)) # network testing sampling
+
+#params = data.frame("alpha"=c(0.1,0.1,1.0),"gamma"=c(0.0,30.0,10.0)) # individual household testing
+
 
 # create full list of all the to be researched entries 
 params_list <- vector(mode="list", length=ncol(params))
@@ -101,8 +108,13 @@ Next, we have to make a permutation of the input parameter list as the basis for
 
 ```{r}
 # Create samples for all variables  !! not automatic 
+params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$ParallelServed,params_list$gamma,params_list$epsilon) # Queue testing
 # params_sample <- expand.grid(params_list$ParallelServed,params_list$alpha,params_list$beta,params_list$gamma)
-params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$gamma)
+
+# params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$avg_pc) # network testing extreme values
+# params_sample <- expand.grid(params_list$alpha,params_list$beta) # network testing sampling
+
+# params_sample <- expand.grid(params_list$alpha,params_list$gamma) # individual household testing 
 names(params_sample) <- names(params)
 ```
 
@@ -110,20 +122,27 @@ Next, we have to set our observables in a data.frame. The names must correspond 
 
 ```{r}
 # create dataframe for observations and corresponding framerate 
+# obs = data.frame("tick"=1,"AverageEmotionalState"=1,"EmotionalState"=1) # Network testing 
+# obs = data.frame("tick"=1,"EmotionalState"=1,"FoodInStorage"=1) # Individual household testing
 # obs = data.frame("tick"=1,"AverageDeliverySize"=1,"QueueLength"=1,"FacilityStorage"=1)
-obs = data.frame("tick"=1,"AverageEmotionalState"=1)
+obs = data.frame("tick"=1,"AverageDeliverySize"=1,"QueueLength"=1,"FacilityStorage"=1,"AverageEmotionalState"=1)
+
 ```
 
 Next, we set the input parameters that will feed into the `createXML` function
 
 ```{r}
 # set path to model file 
+path = "/home/daan/GAMA/workspace/FATM_ABM/main/facility_verification/QReaction_test.gaml"
 #path = "/home/daan/GAMA/workspace/FATM_ABM/main/facility_verification/facilities_test.gaml"
+
 # path = "/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/household_test.gaml"
-path = "/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/network_test.gaml"
+# path = "/home/daan/GAMA/workspace/FATM_ABM/main/household_verification/network_test.gaml"
 
 # give experiment name 
-exp_name = "NetworkStartle"
+# exp_name = "NoStartle"
+# exp_name = "NetworkStartle"
+exp_name = "FacilityToHouseholds"
 
 # till what tick 
 cycles_in_day <- 6*24
@@ -147,9 +166,7 @@ total_df <- NULL
 
 # for the entire sample list 
 for (run in 1:nrow(params_sample)){
-  
   for (replication in 1:replications){
-    
     simulation_id<-paste0(replication)
     
     # temporary experiment xml
