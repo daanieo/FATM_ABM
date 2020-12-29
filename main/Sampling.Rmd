@@ -114,7 +114,7 @@ params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$Para
 # params_sample <- expand.grid(params_list$alpha,params_list$beta,params_list$avg_pc) # network testing extreme values
 # params_sample <- expand.grid(params_list$alpha,params_list$beta) # network testing sampling
 
-# params_sample <- expand.grid(params_list$alpha,params_list$gamma) # individual household testing 
+# params_sample <- expand.grid(params_list$alpha,params_list$gamma) # individual household testing  
 names(params_sample) <- names(params)
 ```
 
