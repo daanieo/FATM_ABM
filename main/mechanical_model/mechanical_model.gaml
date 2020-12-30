@@ -33,7 +33,7 @@ global {
 	float alpha <- 0.1;
 	float beta <- 1.0;
 	float gamma <-10.0;
-	float epsilon<-0.0;  
+	float epsilon<-0.5;  
 	
 	float parallel_served <- parallel_served_full/scaling_factor;
 	int avg_hh_size<-7;
@@ -52,8 +52,8 @@ global {
 	
 //	Statistics
 	list<float> avg_es <- []; // avg emotional state
-	list<float> uc <- []; // unsatisfied consumption
-	list<float> avg_ds <- []; // avg distribution size
+	list<float> sum_uc <- []; // unsatisfied consumption
+	list<float> sum_fd <- []; // avg distribution size
 	list<float> avg_qs <- []; // avg queuing size 
 
 	
@@ -99,6 +99,7 @@ global {
 			emotional_state <- 0.0;
 			emotional_timestamp <- 0;
 			facility_of_choice <- my_facility;	// initally facility of choice is my facility 
+			degraded_food <- 0.0;
 			
 //			States			
 			incentive_to_facility <- false;
@@ -106,7 +107,7 @@ global {
 				
 //			Initialise statistics	
 			unsatisfied_consumption <- 0.0;
-			queuing_time <- 0.0;
+//			queuing_time <- 0.0;
 					
 //			Add the number of household members to the facility			
 			ask my_facility {
@@ -117,12 +118,9 @@ global {
 	
 	reflex t {
 		
-		float sum_served <- facilities sum_of each.food_served;
-		float nb_served <- facilities sum_of each.nb_served;
-		add (sum_served/nb_served) to: avg_ds;
-		add (households mean_of each.queuing_time) to: avg_qs;		
-		add (households sum_of each.unsatisfied_consumption) to: uc;
+		add (households sum_of each.unsatisfied_consumption) to: sum_uc;
 		add (households mean_of each.emotional_state) to: avg_es;
+		add (households sum_of each.degraded_food) to: sum_fd;
 		
 	}
 	
@@ -183,10 +181,11 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 	monitor "Queue length 11" value: length(facilities[11].queue);
 	
 	monitor "avg es" value: households mean_of each.emotional_state;
-	monitor "avg Qtime" value: households mean_of each.queuing_time;
 	monitor "unsatisfied consumption" value: households sum_of each.unsatisfied_consumption;
 	
 	monitor "average serving size" value: (facilities sum_of each.food_served) / (facilities sum_of each.nb_served);
+	
+	monitor "food degraded" value: households sum_of each.degraded_food;
 		
 	}
 }
@@ -194,51 +193,113 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 
 experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>(30*cycles_in_day)){
 	
-	parameter "alpha" var: alpha min: 0.1 max: 0.1 step: 0.01;
-	parameter "beta" var: beta min:0.5 max: 0.5 step: 0.5;
- 	parameter "gamma" var: gamma min:5 max: 5 step: 25;
- 	parameter "epsilon" var: epsilon min: 0.8 max: 0.8 step: 0.7; 
+	parameter "alpha" var: alpha min: 0.1 max: 0.5 step: 0.4; // 2
+	parameter "beta" var: beta min:0.05 max: 0.55 step: 0.5; // 2
+ 	parameter "gamma" var: gamma min:5 max: 30 step: 25; // 2
+ 	parameter "epsilon" var: epsilon min: 0.2 max: 1.0 step: 0.8; //2 
 
  	
- 	parameter "avg_interactions" var: avg_interactions min: 3 max: 3 step: 5;
+ 	parameter "avg_interactions" var: avg_interactions min: 0 max: 5 step: 5; // 2
 
- 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 2 max:7 step: 5;
+ 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 2 max:10 step: 8; //2
 	
-	int sim <-63;
+	int sim <-0;
+	int nb_sims <- 10 * 2*2*2*2*2*2 ;
+	
+
 	
 	reflex t {
 		
+		string outcomes_sum_fd <- "";
+		string outcomes_input <- "";
+		string outcomes_avg_es <- "";
+		string outcomes_es <- "";
+		string outcomes_sum_uc<- "";
+		string outcomes_uc <- "";
+		string outcomes_ql <- "";
+		string outcomes_fs_p <- "";
+			
+		int rep<-0;
+		
 		ask simulations {
 			
-			// add line with the corresponding input parameters
-			string outcome <- string(alpha) + ","+beta+","+gamma+","+epsilon+","+avg_interactions+","+parallel_served_full+"\n0.0";
+			outcomes_input <- outcomes_input + rep+ "," + string(alpha) + ","+beta+","+gamma+","+epsilon+","+avg_interactions+","+parallel_served_full+"\n";
 			
-			// avg_es
+			// Add the average emotional state to the outcome string 
 			loop v over: avg_es{
-				outcome <- outcome + ","+v;
+				outcomes_avg_es <- outcomes_avg_es + ","+v;
 			}
-			outcome<-outcome+"\n0.0";
+			outcomes_avg_es<-outcomes_avg_es+"\n";
+	
+			// Add the unsatisfied consumption to the outcome string 
+			loop v over: sum_uc{
+				outcomes_sum_uc <- outcomes_sum_uc + ","+v;
+			}
+			outcomes_sum_uc<-outcomes_sum_uc+"\n";		
 			
-			//uc
-			loop v over: uc{
-				outcome <- outcome + ","+v;
+			// Add the food degradation to the outcome string 
+			loop v over: sum_fd{
+				outcomes_sum_fd <- outcomes_sum_fd + ","+v;
 			}
-			outcome<-outcome+"\n0.0";
+			outcomes_sum_fd<-outcomes_sum_fd+"\n";		
 			
-			// avg_ds
-			loop v over: avg_ds{
-				outcome <- outcome + ","+v;
+			loop f over: facilities{
+				outcomes_ql <- outcomes_ql + rep + "," + f.name;
+				loop v over: f.length_of_queue{
+					outcomes_ql <- outcomes_ql + "," + v;
+				}
+				outcomes_ql <- outcomes_ql + "\n"; 
 			}
-			outcome<-outcome+"\n0.0";
-			// avg_qs
-			loop v over: avg_qs{
-				outcome <- outcome + ","+v;
-			}
-			outcome<-outcome+"\n";
 			
-			save outcome to: "/home/daan/GAMA/workspace/results/scaling_2k/sim"+myself.sim+".csv" type: "csv";
-			myself.sim<-myself.sim+1;
+			save outcomes_input to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_input_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_avg_es_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_uc_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_fd_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			
+			// Individual facility
+			save outcomes_ql to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_ql_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			
+			// Statistics collected each day per household. 
+//			loop h over: households{
+//				myself.outcomes_uc <- myself.outcomes_uc + myself.sim + "," + h.name;
+//				myself.outcomes_es <- myself.outcomes_es + myself.sim + "," + h.name;
+//				myself.outcomes_fs_p <- myself.outcomes_fs_p + myself.sim + "," + h.name;
+//
+//				loop v1 over: h.uc{
+//					myself.outcomes_uc <- myself.outcomes_uc + "," + v1;
+//				}
+//				loop v2 over: h.es{
+//					myself.outcomes_es <- myself.outcomes_es + "," + v2;
+//				}
+//				loop v3 over: h.fs_p{
+//					myself.outcomes_fs_p <- myself.outcomes_fs_p+ ","+v3;
+//				}
+//				myself.outcomes_es <- myself.outcomes_es + "\n";
+//				myself.outcomes_uc <- myself.outcomes_uc + "\n"; 
+//				myself.outcomes_fs_p <- myself.outcomes_fs_p + "\n";
+//			}
+			
+									
+			rep<-rep+1;
 		}
+			
+	
+//		write "saving shit simulation "+sim;
+//		save outcomes_input to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_input_sim"+sim+".csv" type: "csv";
+//		save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_avg_es_sim"+sim+".csv" type: "csv";
+//		save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_uc_sim"+sim+".csv" type: "csv";
+//		save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_fd_sim"+sim+".csv" type: "csv";
+//		
+//		// Individual facility
+//		save outcomes_ql to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_ql_sim"+sim+".csv" type: "csv";
+		
+//		// Individual household
+//		save outcomes_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_uc.csv" type: "csv";
+//		save outcomes_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_es.csv" type: "csv";	
+//		save outcomes_fs_p to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_fs_p.csv" type: "csv";		
+
+		sim<-sim+1;
+
 	}
 }
 

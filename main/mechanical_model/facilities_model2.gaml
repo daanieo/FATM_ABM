@@ -95,8 +95,9 @@ species facilities{
 						
 						ask first(queue) {
 							food_storage <- food_storage + granted;
+							degraded_food <- degraded_food + max([0,granted-(nb_members*ration*14/30)]);
 							incentive_to_home <- true;
-							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
+//							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
 						}
 						nb_served <- nb_served +1;
 						food_served<-food_served+granted;						
@@ -109,7 +110,7 @@ species facilities{
 						
 						ask first(queue) {
 							emotional_state <- 1;
-							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
+//							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
 						}
 						remove first(queue) from: queue;
 					}

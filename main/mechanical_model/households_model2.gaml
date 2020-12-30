@@ -41,10 +41,14 @@ species households skills:[moving] {
 	float emotional_state;
 	int emotional_timestamp;
 	date queue_timestamp;
+	float unsatisfied_consumption;
+	float degraded_food;
+	
 	
 //	Statistics
-	float unsatisfied_consumption;
-	float queuing_time;
+	list<float> uc; // unsatisfied consumption
+	list<float> es; // emotional state
+	list<float> fs_p; // food storage per person
 	
 //	Function to visualise
 	aspect map_visualisation {	
@@ -87,7 +91,8 @@ species households skills:[moving] {
 	float determine_demand { 								// Returns the demand based on being infected or not
 	
 		if emotional_state>=infected_threshold {
-			return ration*( gamma * nb_members/30 + emotional_state*(1-gamma*nb_members/30));
+	
+			return ration*emotional_state*nb_members;
 		} else{
 			return  gamma * ration/30 * nb_members;
 		}		
@@ -178,6 +183,11 @@ species households skills:[moving] {
 				
 //		At the beginning of each day 1) consume food and 2) determine whether the agent wants to go to a facility
 		if current_date.hour = 0  and current_date.minute = 0{
+			// statistics
+//			add unsatisfied_consumption to: uc;
+//			add emotional_state to: es;
+//			add food_storage/nb_members to: fs_p;
+						
 			do consume_food;		
 			do forget;
 		}
