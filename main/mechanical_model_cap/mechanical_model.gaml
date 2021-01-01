@@ -61,10 +61,9 @@ global {
 	init {
 
 //		Create facility agents
-		create facilities from: shape_file_facilities { 
+		create facilities from: shape_file_facilities with: [nb_beneficiaries::read ("size")] { 
 									
 //			Assign empties to variables 
-			nb_beneficiaries <- 0; // the number of people a facility is supposed to serve 
 			queue <- [];
 			queue_open<-true;
 			facility_food_storage <- nb_households*15/scaling_factor; // At initialisation, food storage has max capacity 
@@ -73,6 +72,7 @@ global {
 			food_served <- 0.0;
 			nb_served <-1;
 			unsatisfied_demand <- 0.0;
+			
 
 		}
 		
@@ -109,10 +109,10 @@ global {
 			unsatisfied_consumption <- 0.0;
 //			queuing_time <- 0.0;
 					
-//			Add the number of household members to the facility			
-			ask my_facility {
-				nb_beneficiaries <- nb_beneficiaries + myself.nb_members; 
-			}			
+////			Add the number of household members to the facility			
+//			ask my_facility {
+//				nb_beneficiaries <- nb_beneficiaries + myself.nb_members; 
+//			}			
 		} 
 	}
 	
@@ -194,34 +194,35 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>(30*cycles_in_day)){
 	
 	parameter "alpha" var: alpha min: 0.1 max: 0.5 step: 0.4; // 2
-	parameter "beta" var: beta min:0.05 max: 0.55 step: 0.5; // 2
- 	parameter "gamma" var: gamma min:5 max: 30 step: 25; // 2
+	parameter "beta" var: beta min:0.1 max: 0.6 step: 0.25; // 3
+ 	parameter "gamma" var: gamma min:2 max: 30 step: 14; // 3
  	parameter "epsilon" var: epsilon min: 0.2 max: 1.0 step: 0.8; //2 
 
  	
- 	parameter "avg_interactions" var: avg_interactions min: 0 max: 5 step: 5; // 2
+ 	parameter "avg_interactions" var: avg_interactions min: 0 max: 6 step: 3; // 3
 
- 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 2 max:10 step: 8; //2
+ 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 2 max:10 step: 4; //3
 	
 	int sim <-0;
-	int nb_sims <- 10 * 2*2*2*2*2*2 ;
 	
 
 	
 	reflex t {
 		
-		string outcomes_sum_fd <- "";
-		string outcomes_input <- "";
-		string outcomes_avg_es <- "";
-		string outcomes_es <- "";
-		string outcomes_sum_uc<- "";
-		string outcomes_uc <- "";
-		string outcomes_ql <- "";
-		string outcomes_fs_p <- "";
+
 			
 		int rep<-0;
 		
 		ask simulations {
+			
+			string outcomes_sum_fd <- "";
+			string outcomes_input <- "";
+			string outcomes_avg_es <- "";
+			string outcomes_es <- "";
+			string outcomes_sum_uc<- "";
+			string outcomes_uc <- "";
+			string outcomes_ql <- "";
+			string outcomes_fs_p <- "";
 			
 			outcomes_input <- outcomes_input + rep+ "," + string(alpha) + ","+beta+","+gamma+","+epsilon+","+avg_interactions+","+parallel_served_full+"\n";
 			
@@ -251,13 +252,13 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 				outcomes_ql <- outcomes_ql + "\n"; 
 			}
 			
-			save outcomes_input to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_input_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_avg_es_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_uc_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_fd_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_input to: "/home/daan/GAMA/workspace/results/cap_2k/outcomes_input_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/cap_2k/outcomes_avg_es_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/cap_2k/outcomes_sum_uc_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/cap_2k/outcomes_sum_fd_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
 			
 			// Individual facility
-			save outcomes_ql to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_ql_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_ql to: "/home/daan/GAMA/workspace/results/cap_2k/outcomes_ql_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
 			
 			// Statistics collected each day per household. 
 //			loop h over: households{

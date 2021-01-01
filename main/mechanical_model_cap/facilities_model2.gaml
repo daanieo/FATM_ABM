@@ -20,6 +20,7 @@ species facilities{
 	float facility_food_storage_size;
 	int nb_beneficiaries;
 	
+	
 //	States
 	bool queue_open; 
 	
