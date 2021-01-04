@@ -1,9 +1,22 @@
+---
+title: "Result_interpretation_1"
+output: html_document
+---
 
+## R Markdown
 
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
 library(ggplot2)
+library(dplyr)
+```
 
+Join GAMA-generated csv file into one data.frame. 
 
-# Plot the relevant model runs
+```{r}
 replications <- 4
 variations <- 324
 
@@ -59,74 +72,64 @@ write.csv(ql_df,"/home/daan/Desktop/ql.csv")
 write.csv(sum_fd_df,"/home/daan/Desktop/sum_fd.csv")
 write.csv(sum_uc_df,"/home/daan/Desktop/sum_uc.csv")
 write.csv(avg_es_df,"/home/daan/Desktop/avg_es.csv")
+```
 
-input_df <- read.csv("/home/daan/Desktop/Uncapacitated/input.csv")
-ql_df <- read.csv("/home/daan/Desktop/Uncapacitated/ql.csv")
-sum_fd_df <- read.csv("/home/daan/Desktop/Uncapacitated/sum_fd.csv")
-sum_uc_df <- read.csv("/home/daan/Desktop/Uncapacitated/sum_uc.csv")
-avg_es_df <- read.csv("/home/daan/Desktop/Uncapacitated/avg_es.csv")
+In case already done, read from csv:
 
+```{r}
+input_df <- read.csv("/home/daan/Desktop/Capacitated/input.csv")
+ql_df <- read.csv("/home/daan/Desktop/Capacitated/ql.csv")
+sum_fd_df <- read.csv("/home/daan/Desktop/Capacitated/sum_fd.csv")
+sum_uc_df <- read.csv("/home/daan/Desktop/Capacitated/sum_uc.csv")
+avg_es_df <- read.csv("/home/daan/Desktop/Capacitated/avg_es.csv")
+```
 
+Initialise plots:
+```{r}
+p1<-ggplot()+ggtitle("Average emotional state, capacitated, all samples, day 1-30") + labs(x="ticks [10 min]",y="Emotional state [-]",size=(200))
+p2<-ggplot()+ggtitle("Unsatisfied consumption, capacitated, all samples, day 1-30") + labs(x="ticks [10 min]",y="Unsatisfied consumption [kg]",size=(200))
+p3<-ggplot()+ggtitle("Food degradation, capacitated, all samples, day 1-30") + labs(x="ticks [10 min]",y="Food subject to degradation [kg]",size=(200))
 
-p1<-ggplot()+ggtitle("Average emotional state") + labs(x="ticks [10 min]",y="Emotional state [-]",size=(200))
-p2<-ggplot()+ggtitle("Unsatisfied consumption") + labs(x="ticks [10 min]",y="Unsatisfied consumption [kg]",size=(200))
-p3<-ggplot()+ggtitle("Food degradation") + labs(x="ticks [10 min]",y="Food subject to degradation [kg]",size=(200))
-p4<-ggplot()+ggtitle("Queuing time") + labs(x="ticks [10 min]",y="Total queuing time [min]",size=(200))
+avg_es_df <- avg_es_df[,2:ncol(avg_es_df)]
+sum_fd_df <- sum_fd_df[,2:ncol(avg_es_df)]
+sum_uc_df <- sum_uc_df[,2:ncol(avg_es_df)]
 
-till <- 100
-
-f1 <- rep(0,nrow(avg_es_df))
-f2 <- rep(0,nrow(avg_es_df))
-f3 <- rep(0,nrow(avg_es_df))
-
-for (entry in 2:(nrow(avg_es_df)/4)){
-  # f1[entry] <- max( t(avg_es_df)[2:nrow(avg_es_df),entry] )
-  # f2[entry] <- max( t(sum_fd_df)[2:nrow(sum_fd_df),entry] )
-  # f3[entry] <- max( t(sum_uc_df)[2:nrow(sum_uc_df),entry] )
-  # 
-  
-  p1<-p1+geom_line(aes_string(x=1:ncol(avg_es_df),y=t(avg_es_df)[,entry*4]))
+for (entry in 1:(nrow(avg_es_df)/4)){ # For every fourth replication
+  p1<-p1+geom_line(aes_string(x=1:ncol(avg_es_df),y=as.numeric(avg_es_df[entry*4,])))
   p2<-p2+geom_line(aes_string(x=1:ncol(sum_fd_df),y=t(sum_fd_df)[,entry*4]))
   p3<-p3+geom_line(aes_string(x=1:ncol(sum_uc_df),y=t(sum_uc_df)[,entry*4]))
-  
 }
+```
 
 
 
-f4 <- filter(ql_df, X%%48==0)
-f4 <- f4[,3:ncol(f4)]
-
-for (entry in 1:(nrow(f4)/2)){
-  tmp <- as.numeric(f4[entry,])
-  message(entry)
-  p4<-p4+geom_line(aes_string(x=1:(length(tmp)),y=tmp))
-  
-}
-print(p4)
-
-ggplot() + boxplot(f1)
-ggplot()+ boxplot(f2)
-ggplot() + boxplot(f3)
-
-ggplot() + geom_point(aes(x=rep(0,1296),y=f1))
-ggplot() + geom_point(aes(x=rep(0,1296),y=f2))
-ggplot() + geom_point(aes(x=rep(0,1296),y=f3))
-
-library(dplyr)
-
-y<-filter(sum_uc_df,f3<15000,f3>5000)
-for (entry in 1:nrow(y)){
-  p3<-p3+geom_line(aes_string(x=1:ncol(y),y=t(y)[,entry]))
-
-}
-
-sum_uc_df[15000>f3][f3>5000]
-sum_uc_df[20000>f3][f3>15000]
-sum_uc_df[f3>30000]
-
+```{r}
 print(p1)
+```
+
+
+
+```{r}
 print(p2)
+```
+
+
+```{r}
 print(p3)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
