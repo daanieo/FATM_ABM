@@ -13,12 +13,29 @@ import "households_model2.gaml"
 
 
 global {
+	
+	list<string> capacity_policies <- ["capacitated","uncapacitated"];
+	list<string> access_policies <- ["base","far","tar"];
+	list<string> rerouting_policies <- ["base","rr1","rr2"];
+	
+//	Model structure
+	int capacity_policy <- 0;
+	int access_policy <-0;
+	int rerouting_policy <- 0;
+	
+	bool extended_service <- false;
+	
+	bool breakdown_scenario <- false;
+
+	int broken_facility_id <- 8;
+	
 	file shape_file_buildings <- shape_file("/home/daan/Documents/input_files/building_polygons/filtered/2217.shp","EPSG:4326");
 //	file shape_file_buildings <- shape_file("/home/daan/Documents/input_files/building_polygons/filtered/3022.shp","EPSG:4326");
 //	file shape_file_buildings <- shape_file("/home/daan/Documents/input_files/building_polygons/filtered/6650.shp","EPSG:4326");
 //	file shape_file_buildings <- shape_file("/home/daan/Documents/input_files/building_polygons/filtered/33249.shp","EPSG:4326");
 
-	file shape_file_facilities <- shape_file("/home/daan/Documents/FATM_opt/save_files/gdf_0f/gdf_0f.shp","EPSG:4326");
+	file shape_file_facilities <- shape_file("/home/daan/Documents/FATM_opt/save_files/gdf_0f/gdf_0f.shp","EPSG:4326"); // for everything functional
+	
 	geometry shape <-envelope(shape_file_buildings);
 	
 	int scaling_factor <- 15;
@@ -28,11 +45,11 @@ global {
 
 //	Experiment-variable and potential vital variable
 	int nb_households <- round(2500/scaling_factor);
-	int parallel_served_full <- 5;
+	float parallel_served_full <- 5.0;
 	int avg_interactions <- 5;
-	float alpha <- 0.1;
+	float alpha <- 1.0;
 	float beta <- 1.0;
-	float gamma <-10.0;
+	float gamma <-3.0;
 	float epsilon<-0.5;  
 	
 	float parallel_served <- parallel_served_full/scaling_factor;
@@ -59,14 +76,17 @@ global {
 	
 
 	init {
+		
 
 //		Create facility agents
-		create facilities from: shape_file_facilities with: [nb_beneficiaries::read ("size")] { 
+		create facilities from: shape_file_facilities with: [nb_beneficiaries::read ("size"), facility_id::read("fatm_id")] { 
 									
 //			Assign empties to variables 
 			queue <- [];
 			queue_open<-true;
 			facility_food_storage <- nb_households*15/scaling_factor; // At initialisation, food storage has max capacity 
+			
+
 			
 //			Initialise statistics
 			food_served <- 0.0;
@@ -74,6 +94,7 @@ global {
 			unsatisfied_demand <- 0.0;
 			
 
+			
 		}
 		
 //		Create household agents
@@ -86,15 +107,17 @@ global {
 			speed <- 4 #km/#hour;					// speed of beneficiaries 
 			social_network <- [];
 			
+			identity_number <- rnd(0,6); // when to go to facility
 	
 //			Unique constants
 			nb_members <- rnd(avg_hh_size-3,avg_hh_size+3); // houshold size equally varying between 4 and 10 
-			pc<- rnd(0,9)/10; 						// personal characteristic varying between 0 and 1
+			pc<- rnd(0,10)/10; 						// personal characteristic varying between 0 and 1
 			home_location <- location;				// home location = current location 
 			my_facility <- determine_facility();	// home facility is current closest facility 
-					
+			
 			
 //			Variables
+			remaining_ration<-ration*nb_members;
 			food_storage <- ration/30 * gamma * nb_members + rnd(0,gamma)*nb_members*ration/30;			// initial food storage 
 			emotional_state <- 0.0;
 			emotional_timestamp <- 0;
@@ -108,11 +131,10 @@ global {
 //			Initialise statistics	
 			unsatisfied_consumption <- 0.0;
 //			queuing_time <- 0.0;
-					
-////			Add the number of household members to the facility			
-//			ask my_facility {
-//				nb_beneficiaries <- nb_beneficiaries + myself.nb_members; 
-//			}			
+			distance_covered <- 0.0;
+			
+
+		
 		} 
 	}
 	
@@ -134,16 +156,24 @@ global {
 
 experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_in_day)){
 	
-	parameter "alpha" var: alpha min: 0 max: 1 step: 0.01;
-	parameter "beta" var: beta min:0 max: 1 step: 0.1;
- 	parameter "gamma" var: gamma min:1 max: 30 step:1;
- 	parameter "epsilon" var: epsilon min: 0 max: 1 step: 0.1; 
- 	
- 	parameter "avg_interactions" var: avg_interactions min: 0 max: 10 step: 1;
-
- 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 1 max:100 step: 1;
+//	Model structure
+	parameter "capacity policies" var: capacity_policy min: 0 max: 1 step: 1; 
+	parameter "access policies" var: access_policy min: 0 max: 2 step: 1; 
+	parameter "rerouting policies" var: rerouting_policy min: 0 max: 2 step: 1; 
 	
-
+	parameter "extended service hours" var: extended_service <- false;
+	parameter "breakdown scenario" var: breakdown_scenario <- false;
+	parameter "id of broken facility" var: broken_facility_id <- 8; 
+	
+//	Constants
+ 	parameter "avg_interactions" var: avg_interactions <- 5; 
+ 	parameter "Est. facility capacity per cycle" var: parallel_served_full <- (2500 * 10) / 2160;
+		
+//	Behavioural parameters	
+	parameter "alpha" var: alpha min: 0.0 max: 1.0 step: 1.0; // 2
+	parameter "beta" var: beta min:0.0 max: 1.0 step: 1; // 2
+ 	parameter "gamma" var: gamma min:3.0 max: 14.0 step: 11.0; // 2
+ 	parameter "epsilon" var: epsilon min: 0.0 max: 1.0 step: 1.0; //2 
 		
 	output {
 
@@ -155,6 +185,7 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 
     }    
        	chart "Facilities queue lengths" type: series y_label: "# people" y_range:[0,2500] x_range: [0,4000]size: {1.0,0.5} position: {0, 0.5} {
+       		
         loop f over: facilities {
     		data f.name value: length(f.queue);
 		}
@@ -193,38 +224,61 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 
 experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>(30*cycles_in_day)){
 	
-	parameter "alpha" var: alpha min: 0.1 max: 0.5 step: 0.4; // 2
-	parameter "beta" var: beta min:0.1 max: 0.6 step: 0.25; // 3
- 	parameter "gamma" var: gamma min:2 max: 30 step: 14; // 3
- 	parameter "epsilon" var: epsilon min: 0.2 max: 1.0 step: 0.8; //2 
-
- 	
- 	parameter "avg_interactions" var: avg_interactions min: 0 max: 6 step: 3; // 3
-
- 	parameter "Est. facility capacity per cycle" var: parallel_served_full min: 2 max:10 step: 4; //3
 	
-	int sim <-0;
+//	Model structure
+	parameter "capacity policies" var: capacity_policy min: 0 max: 0 step: 1; 
+	parameter "access policies" var: access_policy min: 0 max: 0 step: 1; 
+	parameter "rerouting policies" var: rerouting_policy min: 0 max: 2 step: 1; 
 	
-
+	parameter "extended service hours" var: extended_service <- false;
+	parameter "breakdown scenario" var: breakdown_scenario <- false;
+	parameter "id of broken facility" var: broken_facility_id <- 8; 
 	
-	reflex t {
+//	Constants
+ 	parameter "avg_interactions" var: avg_interactions <- 5; 
+ 	parameter "Est. facility capacity per cycle" var: parallel_served_full <- (2500 * 10) / 2160;
 		
+//	Behavioural parameters	
+//	parameter "alpha" var: alpha min: 0.0 max: 1.0 step: 1.0; // 2
+//	parameter "beta" var: beta min:0.0 max: 1.0 step: 1.0; // 2
+// 	parameter "gamma" var: gamma min:3.0 max: 14.0 step: 11.0; // 2
+// 	parameter "epsilon" var: epsilon min: 0.0 max: 1.0 step: 1.0; //2 
+ 	
+	parameter "alpha" var: alpha min: 0.0 max: 0.0 step: 1.0; // 2
+	parameter "beta" var: beta min:1.0 max: 1.0 step: 1.0; // 2
+ 	parameter "gamma" var: gamma min:3.0 max: 3.0 step: 11.0; // 2
+ 	parameter "epsilon" var: epsilon min: 0.0 max: 0.0 step: 1.0; //2 
+ 	
 
+	int sim <-0;
+		
+	reflex t {
 			
 		int rep<-0;
 		
 		ask simulations {
 			
-			string outcomes_sum_fd <- "";
-			string outcomes_input <- "";
-			string outcomes_avg_es <- "";
-			string outcomes_es <- "";
-			string outcomes_sum_uc<- "";
-			string outcomes_uc <- "";
-			string outcomes_ql <- "";
-			string outcomes_fs_p <- "";
+//			capacity_policies <- ["capacitated","uncapacitated"];
+//			access_policies <- ["base","far","tar"];
+//			rerouting_policies <- ["base","rr1","rr2"];
 			
-			outcomes_input <- outcomes_input + rep+ "," + string(alpha) + ","+beta+","+gamma+","+epsilon+","+avg_interactions+","+parallel_served_full+"\n";
+			string experiment_name <- capacity_policies[capacity_policy]+"_"+access_policies[access_policy]+"_"+rerouting_policies[rerouting_policy];
+			
+
+			string outcomes_input <- "";
+			string outcomes_sum_fd <- "";
+			string outcomes_avg_es <- "";
+			string outcomes_sum_uc<- "";
+			string outcomes_ql <- "";
+			
+			string outcomes_distance_per_agent <- "";
+			
+			loop v over: households{
+				outcomes_distance_per_agent <- outcomes_distance_per_agent + ","+ v.home_location.x+","+v.home_location.y+","+v.distance_covered;
+			}
+			outcomes_distance_per_agent<-outcomes_distance_per_agent+"\n";
+						
+			outcomes_input <- outcomes_input + rep + "," + alpha + ","+beta+","+gamma+","+epsilon+","+"\n";
 			
 			// Add the average emotional state to the outcome string 
 			loop v over: avg_es{
@@ -252,52 +306,18 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 				outcomes_ql <- outcomes_ql + "\n"; 
 			}
 			
-			save outcomes_input to: "/home/daan/GAMA/workspace/results/uncap_2k/outcomes_input_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/uncap_2k/outcomes_avg_es_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/uncap_2k/outcomes_sum_uc_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/uncap_2k/outcomes_sum_fd_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			
-			// Individual facility
-			save outcomes_ql to: "/home/daan/GAMA/workspace/results/uncap_2k/outcomes_ql_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
-			
-			// Statistics collected each day per household. 
-//			loop h over: households{
-//				myself.outcomes_uc <- myself.outcomes_uc + myself.sim + "," + h.name;
-//				myself.outcomes_es <- myself.outcomes_es + myself.sim + "," + h.name;
-//				myself.outcomes_fs_p <- myself.outcomes_fs_p + myself.sim + "," + h.name;
-//
-//				loop v1 over: h.uc{
-//					myself.outcomes_uc <- myself.outcomes_uc + "," + v1;
-//				}
-//				loop v2 over: h.es{
-//					myself.outcomes_es <- myself.outcomes_es + "," + v2;
-//				}
-//				loop v3 over: h.fs_p{
-//					myself.outcomes_fs_p <- myself.outcomes_fs_p+ ","+v3;
-//				}
-//				myself.outcomes_es <- myself.outcomes_es + "\n";
-//				myself.outcomes_uc <- myself.outcomes_uc + "\n"; 
-//				myself.outcomes_fs_p <- myself.outcomes_fs_p + "\n";
-//			}
-			
-									
+//			save outcomes_input to: "/home/daan/GAMA/workspace/results/"+experiment_name+"/outcomes_input_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+//			save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/"+experiment_name+"/outcomes_avg_es_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+//			save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/"+experiment_name+"/outcomes_sum_uc_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+//			save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/"+experiment_name+"/outcomes_sum_fd_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+//			
+//			// Individual facility
+//			save outcomes_ql to: "/home/daan/GAMA/workspace/results/"+experiment_name+"/outcomes_ql_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+//			// Individual agent
+			save outcomes_distance_per_agent to: "/home/daan/Desktop/outcomes_dist_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+							
 			rep<-rep+1;
 		}
-			
-	
-//		write "saving shit simulation "+sim;
-//		save outcomes_input to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_input_sim"+sim+".csv" type: "csv";
-//		save outcomes_avg_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_avg_es_sim"+sim+".csv" type: "csv";
-//		save outcomes_sum_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_uc_sim"+sim+".csv" type: "csv";
-//		save outcomes_sum_fd to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_fd_sim"+sim+".csv" type: "csv";
-//		
-//		// Individual facility
-//		save outcomes_ql to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_ql_sim"+sim+".csv" type: "csv";
-		
-//		// Individual household
-//		save outcomes_uc to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_uc.csv" type: "csv";
-//		save outcomes_es to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_es.csv" type: "csv";	
-//		save outcomes_fs_p to: "/home/daan/GAMA/workspace/results/scaling_2k/outcomes_fs_p.csv" type: "csv";		
 
 		sim<-sim+1;
 

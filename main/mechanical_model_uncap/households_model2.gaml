@@ -27,9 +27,12 @@ species households skills:[moving] {
 	facilities my_facility; 
 	
 //	Specific constants
+	float remaining_ration;
 	int nb_members; 
 	float pc; 
 	list<households> social_network;
+	int identity_number;
+	
 		
 //	Routing variables
 	bool incentive_to_facility;
@@ -50,6 +53,8 @@ species households skills:[moving] {
 	list<float> es; // emotional state
 	list<float> fs_p; // food storage per person
 	
+	float distance_covered;
+	
 //	Function to visualise
 	aspect map_visualisation {	
 		draw circle(7.5#m) color: color; 
@@ -65,14 +70,22 @@ species households skills:[moving] {
 		
 		float probability_of_going <- 0.0;
 		
-		if wake_up <= current_date.hour and current_date.hour < closing_hour {
+		if wake_up <= current_date.hour and current_date.hour < closing_hour and remaining_ration>0{
 			probability_of_going <- 1/(active_hours*cycles_in_hour);
 		}
 		
-			
-		if (rnd(0,100)/100) < probability_of_going{
-			incentive_to_facility <- true;			
-		}
+		if access_policy=2 {
+			if mod(current_date.day,6) = identity_number{
+				if (rnd(0,100)/100) < probability_of_going{
+					incentive_to_facility <- true;			
+				}
+			}
+		} else {
+			if (rnd(0,100)/100) < probability_of_going{
+				incentive_to_facility <- true;			
+			}
+		}			
+
 		
 	}
 
@@ -89,24 +102,34 @@ species households skills:[moving] {
 		}
 		
 	float determine_demand { 								// Returns the demand based on being infected or not
-	
+		
+		float policy_influenced_gamma <- gamma;
+		
+		if access_policy = 1 or access_policy = 2{
+			policy_influenced_gamma <- 7.0;
+		}
+						
 		if emotional_state>=infected_threshold {
 	
-			return ration*emotional_state*nb_members;
+			return min(ration*emotional_state*nb_members,remaining_ration);
 		} else{
-			return  gamma * ration/30 * nb_members;
+			
+			return  min(policy_influenced_gamma * ration/30 * nb_members,remaining_ration);
 		}		
 		}
 	
 	
-	facilities determine_facility { 							// Function determining closes faculty 	
+	facilities determine_facility { 							// Function determining closes facility except for current facility
 		float min_dist <- #infinity; 							// infinitely large minimal distance
 		facilities closest_fac <- nil; 							// no closest facility 
-		loop fac over: facilities { 							// loop over all facilities in system 
+		loop fac over: facilities { 
+	
+										// loop over all facilities in system 
 			if distance_to(location,fac.location)<min_dist and fac != facility_of_choice{ 	// if distance between facilities is smaller than before
 				min_dist <- distance_to(location,fac.location); // update smallest distance
 				closest_fac <- fac; 							// update facility 
-				}
+				}		
+				
 			}
 		return closest_fac; 
 		}
@@ -119,6 +142,11 @@ species households skills:[moving] {
 			ask facility_of_choice {				// ask facility to 
 				add myself to: queue;				// add this household agent to queue 
 			}			
+			incentive_to_facility <- false;
+		} else {
+			
+			do reroute; // determine where to go if the facility's queue is closed
+	
 		} 		
 	}
 
@@ -130,11 +158,13 @@ species households skills:[moving] {
 
 //	Send the agent to the preferred facility
 	action go_facility{								// Function sending to facility
+		distance_covered <- distance_covered + speed / cycles_in_hour;
 		do goto(facility_of_choice) speed: speed;	// go to facility with speed
 	}
 	
 //	Sends the agent home
 	action go_home {								// Function sending to home
+		distance_covered <- distance_covered + speed / cycles_in_hour;
 		do goto(home_location) speed: speed;		// go to home with speed
 		}
 
@@ -145,8 +175,43 @@ species households skills:[moving] {
 		float tolerance <- epsilon*(1-pc)*active_hours*parallel_served*cycles_in_hour;
 //		If the queue is perceived to be too long
 		if length_of_queue > tolerance {	
-			emotional_state <- 1.0;
+			emotional_state <- max(emotional_state,pc);
 		}	
+	}
+	
+	action reroute {
+		//rerouting_policies <- ["base","rr1","rr2"];
+		
+		if rerouting_policy=0 {
+			incentive_to_facility<-false;
+			incentive_to_home<-true;	
+			emotional_state <- max(emotional_state,pc);
+		}
+		
+		if rerouting_policy=1 {
+			if facility_of_choice != my_facility{
+				incentive_to_facility<-false;
+				incentive_to_home<-true;
+				emotional_state <- max(emotional_state,pc);
+			} else {
+				facility_of_choice <- one_of(facilities);
+			}
+			
+		}
+		
+		if rerouting_policy=2 {
+			
+			if facility_of_choice != my_facility{
+				incentive_to_facility<-false;
+				incentive_to_home<-true;
+				emotional_state<-max(emotional_state,pc);
+			} else {
+				facility_of_choice<-determine_facility();
+			}
+			
+		}
+
+		
 	}
 
 	action socialise {		
@@ -190,6 +255,8 @@ species households skills:[moving] {
 						
 			do consume_food;		
 			do forget;
+			
+			facility_of_choice<-my_facility;
 		}
 		
 //		If the agent is 'infected' with anxiety
@@ -211,7 +278,6 @@ species households skills:[moving] {
 //			If at facility
 			} else {
 				do enter_queue;
-				incentive_to_facility<-false;
 			}			
 		}
 		
