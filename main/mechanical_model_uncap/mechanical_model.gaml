@@ -14,19 +14,21 @@ import "households_model2.gaml"
 
 global {
 	
-	list<string> capacity_policies <- ["capacitated","uncapacitated"];
-	list<string> access_policies <- ["base","far","tar"];
-	list<string> rerouting_policies <- ["base","rr1","rr2"];
+	list<string> capacity_policies <- ["capacitated","uncapacitated"]; 					// init facilities
+	list<string> minfood_access_policies <- ["base","minfood"]; 						// hh -> determine demand
+	list<string> maxfood_access_policies <- ["base","maxfood","twoweekration"]; 		// hh -> determine demand
+	list<string> day_access_policies <- ["base","tar"]; 								// hh -> consider_facility; init 
+	list<string> rerouting_policies <- ["base_base","base_managed","spread","closest"]; // queue open ; hh -> reroute 
 	
 //	Model structure
 	int capacity_policy <- 0;
-	int access_policy <-0;
-	int rerouting_policy <- 0;
-	
-	bool extended_service <- false;
-	
-	bool breakdown_scenario <- false;
+	int minfood_access_policy <- 0;
+	int maxfood_access_policy <- 0;
+	int day_access_policy <- 0; 
+	int rerouting_policy <- 0; 
 
+	bool extended_service <- false;	
+	bool breakdown_scenario <- false;
 	int broken_facility_id <- 8;
 	
 	file shape_file_buildings <- shape_file("/home/daan/Documents/input_files/building_polygons/filtered/2217.shp","EPSG:4326");
@@ -47,10 +49,11 @@ global {
 	int nb_households <- round(2500/scaling_factor);
 	float parallel_served_full <- 5.0;
 	int avg_interactions <- 5;
-	float alpha <- 1.0;
-	float beta <- 1.0;
-	float gamma <-3.0;
-	float epsilon<-0.5;  
+	
+	float alpha <- 0.5;
+	float beta <- 0.5;
+	float gamma <- 7.0;
+	float epsilon <- 0.5;  
 	
 	float parallel_served <- parallel_served_full/scaling_factor;
 	int avg_hh_size<-7;
@@ -75,8 +78,7 @@ global {
 
 	
 
-	init {
-		
+	init {		
 
 //		Create facility agents
 		create facilities from: shape_file_facilities with: [nb_beneficiaries::read ("size"), facility_id::read("fatm_id")] { 
@@ -84,17 +86,12 @@ global {
 //			Assign empties to variables 
 			queue <- [];
 			queue_open<-true;
-			facility_food_storage <- nb_households*15/scaling_factor; // At initialisation, food storage has max capacity 
-			
-
+			facility_food_storage_size <- nb_beneficiaries*15/scaling_factor;
+			facility_food_storage <- facility_food_storage_size; //nb_households*15/scaling_factor; // At initialisation, food storage has max capacity 
 			
 //			Initialise statistics
 			food_served <- 0.0;
-			nb_served <-1;
-			unsatisfied_demand <- 0.0;
-			
-
-			
+			nb_served <-0;
 		}
 		
 //		Create household agents
@@ -118,7 +115,13 @@ global {
 			
 //			Variables
 			remaining_ration<-ration*nb_members;
-			food_storage <- ration/30 * gamma * nb_members + rnd(0,gamma)*nb_members*ration/30;			// initial food storage 
+			
+			if day_access_policy = 1 {
+				food_storage <- ration/30 * gamma * nb_members + identity_number*nb_members*ration/30;			// initial food storage 
+			} else {
+				food_storage <- ration/30 * gamma * nb_members + rnd(0,gamma)*nb_members*ration/30;			// initial food storage 
+			}
+			
 			emotional_state <- 0.0;
 			emotional_timestamp <- 0;
 			facility_of_choice <- my_facility;	// initally facility of choice is my facility 
@@ -130,7 +133,7 @@ global {
 				
 //			Initialise statistics	
 			unsatisfied_consumption <- 0.0;
-//			queuing_time <- 0.0;
+			time_queued <- 0.0;
 			distance_covered <- 0.0;
 			
 
@@ -157,8 +160,10 @@ global {
 experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_in_day)){
 	
 //	Model structure
-	parameter "capacity policies" var: capacity_policy min: 0 max: 1 step: 1; 
-	parameter "access policies" var: access_policy min: 0 max: 2 step: 1; 
+	parameter "capacity policies" var: capacity_policy min: 0 max: 0 step: 1; 
+	parameter "min food policies" var: minfood_access_policy min: 0 max: 0 step: 1; 
+	parameter "max food policies" var: maxfood_access_policy min: 0 max: 0 step: 1;
+	parameter "day access policies" var: day_access_policy min: 0 max: 0 step: 1; 
 	parameter "rerouting policies" var: rerouting_policy min: 0 max: 2 step: 1; 
 	
 	parameter "extended service hours" var: extended_service <- false;
@@ -177,25 +182,29 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 		
 	output {
 
-		
-	display data_viz {
-       	chart "avg es" type: series y_label: "kg rice" y_range:[-0.1,1] x_range: [0,4000] size: {0.5,0.5} position: {0.5, 0}{
+    display main_display {
+        species households ;
+        species facilities aspect: map_visualisation ;
+    }
+	
+	
+//	Graphs for household agents	
+	display beneficiaries {
+       	chart "avg es" type: series y_label: "kg rice" y_range:[-0.1,1] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
         data "average emotional state" value: households mean_of each.emotional_state;
-        
-
     }    
-       	chart "Facilities queue lengths" type: series y_label: "# people" y_range:[0,2500] x_range: [0,4000]size: {1.0,0.5} position: {0, 0.5} {
-       		
+    	chart "summed food storage of household" type: series y_label: "summed food" y_range:[0,315000] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0,0.5} {
+    		data "summed food" value: households sum_of each.food_storage;
+    	}
+	}
+	
+//	Graphs for facility agents
+	display facilities {
+       	chart "Facilities queue lengths" type: series y_label: "# people" y_range:[0,2500] x_range: [cycle-1000,cycle+1000] size: {1.0,1} position: {0, 0} {
         loop f over: facilities {
     		data f.name value: length(f.queue);
 		}
-
     }
-    
-    	chart "summed food storage of household" type: series y_label: "summed food" y_range:[0,315000] x_range: [0,4000] size: {0.5,0.5} position: {0,0} {
-    		data "summed food" value: households sum_of each.food_storage;
-    	}
-	  
 	}
 	
 	monitor "Queue length 0" value: length(facilities[0].queue);
@@ -227,7 +236,9 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 	
 //	Model structure
 	parameter "capacity policies" var: capacity_policy min: 0 max: 0 step: 1; 
-	parameter "access policies" var: access_policy min: 0 max: 0 step: 1; 
+	parameter "min food policies" var: minfood_access_policy min: 0 max: 0 step: 1; 
+	parameter "max food policies" var: maxfood_access_policy min: 0 max: 0 step: 1;
+	parameter "day access policies" var: day_access_policy min: 0 max: 0 step: 1; 
 	parameter "rerouting policies" var: rerouting_policy min: 0 max: 2 step: 1; 
 	
 	parameter "extended service hours" var: extended_service <- false;
@@ -244,10 +255,10 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 // 	parameter "gamma" var: gamma min:3.0 max: 14.0 step: 11.0; // 2
 // 	parameter "epsilon" var: epsilon min: 0.0 max: 1.0 step: 1.0; //2 
  	
-	parameter "alpha" var: alpha min: 0.0 max: 0.0 step: 1.0; // 2
-	parameter "beta" var: beta min:1.0 max: 1.0 step: 1.0; // 2
- 	parameter "gamma" var: gamma min:3.0 max: 3.0 step: 11.0; // 2
- 	parameter "epsilon" var: epsilon min: 0.0 max: 0.0 step: 1.0; //2 
+	parameter "alpha" var: alpha min: 0.5 max: 0.5 step: 1.0; // 2
+	parameter "beta" var: beta min:0.5 max: 0.5 step: 1.0; // 2
+ 	parameter "gamma" var: gamma min:7.0 max: 7.0 step: 11.0; // 2
+ 	parameter "epsilon" var: epsilon min: 0.5 max: 0.5 step: 1.0; //2 
  	
 
 	int sim <-0;
@@ -258,11 +269,12 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 		
 		ask simulations {
 			
-//			capacity_policies <- ["capacitated","uncapacitated"];
-//			access_policies <- ["base","far","tar"];
-//			rerouting_policies <- ["base","rr1","rr2"];
 			
-			string experiment_name <- capacity_policies[capacity_policy]+"_"+access_policies[access_policy]+"_"+rerouting_policies[rerouting_policy];
+			string experiment_name <- 	capacity_policies[capacity_policy]+"_"
+										+minfood_access_policies[minfood_access_policy]+"_"
+										+maxfood_access_policies[maxfood_access_policy]+"_"
+										+day_access_policies[day_access_policy]+"_"
+										+rerouting_policies[rerouting_policy];
 			
 
 			string outcomes_input <- "";
@@ -280,24 +292,25 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 						
 			outcomes_input <- outcomes_input + rep + "," + alpha + ","+beta+","+gamma+","+epsilon+","+"\n";
 			
-			// Add the average emotional state to the outcome string 
+//			Add the average emotional state to the outcome string 
 			loop v over: avg_es{
 				outcomes_avg_es <- outcomes_avg_es + ","+v;
 			}
 			outcomes_avg_es<-outcomes_avg_es+"\n";
 	
-			// Add the unsatisfied consumption to the outcome string 
+//			Add the unsatisfied consumption to the outcome string 
 			loop v over: sum_uc{
 				outcomes_sum_uc <- outcomes_sum_uc + ","+v;
 			}
 			outcomes_sum_uc<-outcomes_sum_uc+"\n";		
 			
-			// Add the food degradation to the outcome string 
+//			Add the food degradation to the outcome string 
 			loop v over: sum_fd{
 				outcomes_sum_fd <- outcomes_sum_fd + ","+v;
 			}
 			outcomes_sum_fd<-outcomes_sum_fd+"\n";		
 			
+//			Add queue lengths to outcome string
 			loop f over: facilities{
 				outcomes_ql <- outcomes_ql + rep + "," + f.name;
 				loop v over: f.length_of_queue{
@@ -325,6 +338,63 @@ experiment batch_experiment type: batch keep_seed: true repeat: 4 until: (cycle>
 }
 
 
+
+experiment household_stats type: batch keep_seed: true repeat: 4 until: (cycle>(30*cycles_in_day)){
+	
+	
+//	Model structure
+	parameter "capacity policies" var: capacity_policy <- 0; 
+	parameter "min food policies" var: minfood_access_policy <- 0; 
+	parameter "max food policies" var: maxfood_access_policy <- 0; 
+	parameter "day access policies" var: day_access_policy <- 0;  
+	parameter "rerouting policies" var: rerouting_policy <- 0;  
+	
+	parameter "extended service hours" var: extended_service <- false;
+	parameter "breakdown scenario" var: breakdown_scenario <- false;
+	parameter "id of broken facility" var: broken_facility_id <- 8; 
+	
+//	Constants
+ 	parameter "avg_interactions" var: avg_interactions <- 5; 
+ 	parameter "Est. facility capacity per cycle" var: parallel_served_full <- (2500 * 10) / 2160;
+			
+	parameter "alpha" var: alpha <- 0.5; 
+	parameter "beta" var: beta <- 0.5; 
+ 	parameter "gamma" var: gamma <- 7.0; 
+ 	parameter "epsilon" var: epsilon <- 0.5;  
+ 	
+
+	int sim <-0;
+		
+	reflex t {
+			
+		int rep<-0;
+		
+		ask simulations {
+			
+
+			
+			string outcomes_distance_per_agent <- "";
+			string outcomes_queuing_per_agent <- "";
+			 
+			
+			loop v over: households{
+				outcomes_distance_per_agent <- outcomes_distance_per_agent + v.home_location.x+","+v.home_location.y+","+v.distance_covered+"\n";
+				outcomes_queuing_per_agent <- outcomes_queuing_per_agent + v.home_location.x+","+v.home_location.y+","+v.time_queued+"\n";
+				
+			}
+						
+//			outcomes_input <- outcomes_input + rep + "," + alpha + ","+beta+","+gamma+","+epsilon+","+"\n";
+					
+			save outcomes_distance_per_agent to: "/home/daan/Desktop/outcomes_dist_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+			save outcomes_queuing_per_agent to: "/home/daan/Desktop/outcomes_queuetime_sim"+myself.sim+"_rep"+rep+".csv" type: "csv";
+							
+			rep<-rep+1;
+		}
+
+		sim<-sim+1;
+
+	}
+}
 
 
 

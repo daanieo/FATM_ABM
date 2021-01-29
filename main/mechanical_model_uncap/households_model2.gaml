@@ -54,6 +54,7 @@ species households skills:[moving] {
 	list<float> fs_p; // food storage per person
 	
 	float distance_covered;
+	float time_queued;
 	
 //	Function to visualise
 	aspect map_visualisation {	
@@ -65,6 +66,8 @@ species households skills:[moving] {
 
 //	Consider going to facility based on time, spread out the demand optimally
 	action consider_going_to_facility {		
+//		list<string> day_access_policies <- ["base","tar"]; // hh -> consider_facility
+		
 
 		int active_hours <- closing_hour-wake_up;
 		
@@ -74,7 +77,7 @@ species households skills:[moving] {
 			probability_of_going <- 1/(active_hours*cycles_in_hour);
 		}
 		
-		if access_policy=2 {
+		if day_access_policy=1 {
 			if mod(current_date.day,6) = identity_number{
 				if (rnd(0,100)/100) < probability_of_going{
 					incentive_to_facility <- true;			
@@ -102,20 +105,41 @@ species households skills:[moving] {
 		}
 		
 	float determine_demand { 								// Returns the demand based on being infected or not
-		
-		float policy_influenced_gamma <- gamma;
-		
-		if access_policy = 1 or access_policy = 2{
-			policy_influenced_gamma <- 7.0;
-		}
+
+//		list<string> minfood_access_policies <- ["base","minfood"]; // hh -> determine demand
+//		list<string> maxfood_access_policies <- ["base","maxfood"]; // hh -> determine demand
+
+//		Formulate what demand would be without policy intervention
+		float free_demand <- 0.0; 
 						
 		if emotional_state>=infected_threshold {
 	
-			return min(ration*emotional_state*nb_members,remaining_ration);
+			free_demand<- min(ration*emotional_state*nb_members,remaining_ration);
 		} else{
 			
-			return  min(policy_influenced_gamma * ration/30 * nb_members,remaining_ration);
-		}		
+			free_demand<-  min(gamma * ration/30 * nb_members,remaining_ration);
+		}
+		
+//		Return free_demand within the policy boundaries
+		if minfood_access_policy = 1 {
+//			minfood < free_demand < maxfood
+			if maxfood_access_policy = 1 {
+				return min(14 * ration/30 * nb_members, max(7 * ration/30 * nb_members,free_demand) );
+//			minfood<free_demand
+			} else {
+				return max(7 * ration/30 * nb_members,free_demand);
+			}
+		} else {
+//			free_demand<max_food
+			if maxfood_access_policy = 1 {
+				return min(14 * ration/30 * nb_members,free_demand);
+//			free_demand
+			}else {
+				return free_demand;
+			}
+		}
+		
+				
 		}
 	
 	
@@ -180,15 +204,18 @@ species households skills:[moving] {
 	}
 	
 	action reroute {
-		//rerouting_policies <- ["base","rr1","rr2"];
+//	list<string> rerouting_policies <- ["base_base","base_managed","spread","closest"]; 
 		
-		if rerouting_policy=0 {
+		
+//		Send people home when rerouting is not available
+		if rerouting_policy=0 or rerouting_policy=1 {
 			incentive_to_facility<-false;
 			incentive_to_home<-true;	
 			emotional_state <- max(emotional_state,pc);
 		}
 		
-		if rerouting_policy=1 {
+//		Choose a random facility to spread demand
+		if rerouting_policy=2 {
 			if facility_of_choice != my_facility{
 				incentive_to_facility<-false;
 				incentive_to_home<-true;
@@ -199,7 +226,8 @@ species households skills:[moving] {
 			
 		}
 		
-		if rerouting_policy=2 {
+//		Determine another facility as the closest
+		if rerouting_policy=3 {
 			
 			if facility_of_choice != my_facility{
 				incentive_to_facility<-false;
@@ -248,6 +276,8 @@ species households skills:[moving] {
 				
 //		At the beginning of each day 1) consume food and 2) determine whether the agent wants to go to a facility
 		if current_date.hour = 0  and current_date.minute = 0{
+			
+
 			// statistics
 //			add unsatisfied_consumption to: uc;
 //			add emotional_state to: es;
@@ -259,19 +289,15 @@ species households skills:[moving] {
 			facility_of_choice<-my_facility;
 		}
 		
-//		If the agent is 'infected' with anxiety
-		if emotional_state >= infected_threshold{
-			do socialise;
-			do consider_going_to_facility;
-		}
-		
-//		Consider going to a facility when home
-		if (food_storage < gamma * ration/30 * nb_members) and self.location = home_location{
-			do consider_going_to_facility;
-		}		
+	
 		
 //		If there's an incentive to go to a facility
 		if incentive_to_facility{
+			
+			if incentive_to_home {
+				write name + " error "+cycle;
+			}
+			
 //			If not at facility
 			if self.location != facility_of_choice.location {
 				do go_facility;
@@ -283,6 +309,11 @@ species households skills:[moving] {
 		
 //		If there's an incentive to go home
 		if incentive_to_home{
+			
+			if incentive_to_facility{
+				write name + " error2 "+cycle;
+			}
+			
 //			If not home
 			if self.location != home_location{
 				do go_home;
@@ -291,8 +322,21 @@ species households skills:[moving] {
 				incentive_to_home <- false;
 			}
 		}
-	
-	
+		
+//		If the agent is home for at least one tick
+		
+		if self.location=home_location and !incentive_to_home{
+			
+			if emotional_state >= infected_threshold {
+				do socialise;
+				do consider_going_to_facility;
+			}
+			
+			if (food_storage < gamma * ration/30 * nb_members){
+				do consider_going_to_facility;
+			}	
+		}
+		
 		
 	}
 	

@@ -31,13 +31,12 @@ species facilities{
 //  Statistics	
 	int nb_served<-1; 
 	float food_served;
-	float unsatisfied_demand; 
 	list<float> length_of_queue;
 	
 	
 //	Function to visualise
 	aspect map_visualisation {		
-		draw square(size) color: color ;
+		draw circle(100) color: color ;
 	}
 	
 	
@@ -66,7 +65,7 @@ species facilities{
 		
 		
 		if current_date.hour = 0  and current_date.minute = 0{ 		// every day 
-			facility_food_storage <- 15.0*nb_households; 	// refill storage up to max capacity
+			facility_food_storage <- facility_food_storage_size; 	// refill storage up to max capacity
 			queue_open <- true;					// (re-)open queue
 		}
 		
@@ -75,7 +74,8 @@ species facilities{
 						
 //			If the cycle is within opening hours
 			if (opening_hour <= current_date.hour and current_date.hour <= closing_hour) or  (opening_hour <= current_date.hour and extended_service){
-			
+
+//				Determine the probability of being served based on facility's capacity			
 				float served_this_tick <- round(parallel_served);				
 				if capacity_policy=1 { // capacity policy 1 means uncapacitated
 					served_this_tick <- round(parallel_served* (nb_beneficiaries/2500.0) );
@@ -89,50 +89,52 @@ species facilities{
 				}
 				
 
-				
-				loop times: served_this_tick { 	// serves capacity_per_cycle people per cycle
+//				Loop n times, serving people in the queue
+				loop times: served_this_tick { 
 					
 					if length(queue)=0{ 			// stops if the queue is empty
 						break;
 					} else{
-											
-						float food_demanded <- first(queue).determine_demand();
 						
-						float granted <- food_demanded;			
-						
+//						Determine demand and update facility variables										
+						float food_demanded <- first(queue).determine_demand();						
+						float granted <- food_demanded;							
 						facility_food_storage <- facility_food_storage - granted;
-						unsatisfied_demand <- food_demanded - granted;
 						
+//						Update households variables
 						ask first(queue) {
 							food_storage <- food_storage + granted;
 							remaining_ration<-remaining_ration-granted;
 							degraded_food <- degraded_food + max([0,granted-(nb_members*ration*14/30)]);
+							incentive_to_facility<-false;
 							incentive_to_home <- true;
-//							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
+							time_queued <- time_queued + float(current_date - queue_timestamp);
 						}
 						nb_served <- nb_served +1;
 						food_served<-food_served+granted;						
 						remove first(queue) from: queue;
-						
 					}				
 				}
+				
+//				If the cycles is outside opening hours
 				} if current_date.hour > closing_hour {
 					loop while: length(queue)>0{
 						
 						ask first(queue) {
 							emotional_state <- 1.0;
+							incentive_to_facility<-false;
 							incentive_to_home <- true;
-							incentive_to_facility <- false;
-//							queuing_time <- queuing_time + float(current_date - queue_timestamp)/3600.0;
+							time_queued <- time_queued + float(current_date - queue_timestamp);
 						}
 						remove first(queue) from: queue;
 					}
 				}
 				
-			// close queue when it cannot be emptied that day			
-			if (((closing_hour - current_date.hour) * cycles_in_hour * parallel_served) < length(queue)){
-				queue_open<-false;
-				
+//			Make an estimation of the queue's length		
+			if (((closing_hour - current_date.hour) * cycles_in_hour * parallel_served) < length(queue)){				
+				if rerouting_policy != 0 { // policy options 1,2,3 demand active queue management 
+					queue_open<-false;	
+				}
 			}
 			
 			// add breakdown scenario
