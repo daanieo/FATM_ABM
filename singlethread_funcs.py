@@ -62,6 +62,7 @@ def run_model(unique_simulation_id,
     launcher_string = "java -cp %s/plugins/org.eclipse.equinox.launcher*.jar -Xms512m -Xmx2048m -Djava.awt.headless=true org.eclipse.core.launcher.Main -application msi.gama.headless.id4 %s %s"
     # Everything % (gama location, input xml, output xml/dir)
 
+    outputdir = "/tmp"
     #call gama
     os.system(launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
 

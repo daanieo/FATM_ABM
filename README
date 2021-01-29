@@ -1,0 +1,5 @@
+Define experiments 
+
+RUN MPI from bash:
+
+$ mpiexec python -np 4 MPI.py
