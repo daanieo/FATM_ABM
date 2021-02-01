@@ -1,0 +1,6 @@
+model runs:
+***********
+
+normal: permutation of policies under scenarios with 12 facilities as input
+
+sampling base: permutation of normal's scenario parametres with base policy as input
