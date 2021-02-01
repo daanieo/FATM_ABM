@@ -1,4 +1,6 @@
-Define experiments 
+Define experiments in Notebooks 
+
+MPI logic can be found in MPI.py
 
 RUN MPI from bash:
 
