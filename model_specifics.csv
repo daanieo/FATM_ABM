@@ -1,2 +1,2 @@
 ,model_location_string,GAMA_location_string,experiment_name,stopping_condition
-0,/home/daan/GAMA/workspace/FATM_ABM/main/total_model/mechanical_model.gaml,/home/daan/GAMA,simple_simulation,cycle=4320
+0,/home/daan/GAMA/workspace/FATM_ABM/main/total_model/mechanical_model.gaml,/home/daan/GAMA,simple_simulation,cycle=10

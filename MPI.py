@@ -41,45 +41,46 @@ one_thread_loop_size = int(np.ceil(len(input_parameters)/size))
 
 for stl in range(one_thread_loop_size):
     index = stl + rank*one_thread_loop_size
-    print("Working on index number ",index, " of ",len(input_parameters))
-
+    
     if index < len(input_parameters): # Index not exceeding the length of input parameters
-
-        one_parameter_values = np.array(input_parameters.iloc[index,:]) # List of parametres for one run 
-        parameter_names = input_parameters.columns # List of parameter names
-
-        # Generate temporary input .XML file
-        tempfile_location_string = create_input_XML(index,
-                                                    parameter_names,
-                                                    one_parameter_values,
-                                                    output_names,
-                                                    stopping_condition,
-                                                    experiment_name,
-                                                    outputdir,
-                                                    model_location_string,
-                                                    GAMA_location_string)
-
-        # Generate temporary output .xml file
-        output_location_string = run_model(index,tempfile_location_string,GAMA_location_string,outputdir)
-
-        # Parse and delete temporary output file
-        one_outputs = parse_output_XML( unique_simulation_id = index,
-                                        output_location_string = output_location_string,
-                                        output_names = output_names)
-
-
-        # store according to r(eplication)n_o(utput)m
-        for o in range(len(one_outputs)):
-            if stl == 0:
-                sendbufdict["o%s"%(o)] = np.array(one_outputs[o],dtype='float')
-                recvbufdict["o%s"%(o)] = np.empty(size*len(one_outputs[o]), dtype='float')
-
-            else:
-                sendbufdict["o%s"%(o)] = np.concatenate( (sendbufdict["o%s"%(o)], np.array(one_outputs[o],dtype='float')) )
-                recvbufdict["o%s"%(o)] = np.concatenate( (recvbufdict["o%s"%(o)],  np.empty(size*len(one_outputs[o]), dtype='float') ) )
-
-    else:
         pass
+    else:
+        index=0
+        
+    one_parameter_values = np.array(input_parameters.iloc[index,:]) # List of parametres for one run 
+    parameter_names = input_parameters.columns # List of parameter names
+
+    # Generate temporary input .XML file
+    tempfile_location_string = create_input_XML(index,
+                                                parameter_names,
+                                                one_parameter_values,
+                                                output_names,
+                                                stopping_condition,
+                                                experiment_name,
+                                                outputdir,
+                                                model_location_string,
+                                                GAMA_location_string)
+
+    # Generate temporary output .xml file
+    output_location_string = run_model(index,tempfile_location_string,GAMA_location_string,outputdir)
+
+    # Parse and delete temporary output file
+    one_outputs = parse_output_XML( unique_simulation_id = index,
+                                    output_location_string = output_location_string,
+                                    output_names = output_names)
+
+
+    # store according to r(eplication)n_o(utput)m
+    for o in range(len(one_outputs)):
+        if stl == 0:
+            sendbufdict["o%s"%(o)] = np.array(one_outputs[o],dtype='float')
+            recvbufdict["o%s"%(o)] = np.empty(size*len(one_outputs[o]), dtype='float')
+
+        else:
+            sendbufdict["o%s"%(o)] = np.concatenate( (sendbufdict["o%s"%(o)], np.array(one_outputs[o],dtype='float')) )
+            recvbufdict["o%s"%(o)] = np.concatenate( (recvbufdict["o%s"%(o)],  np.empty(size*len(one_outputs[o]), dtype='float') ) )
+
+
 
 # Collect thread-wise output storage from sendbufdict to recvbufdict
 for i in sendbufdict:
