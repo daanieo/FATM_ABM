@@ -11,92 +11,44 @@ comm = MPI.COMM_WORLD
 size = comm.Get_size()
 rank = comm.Get_rank()
 
-model_specifics = pd.read_csv("model_specifics.csv",index_col="Unnamed: 0")
-
-
-# model-specifics
-model_location_string = model_specifics["model_location_string"][0]#"/home/daan/GAMA/workspace/FATM_ABM/main/total_model/mechanical_model.gaml" # the location of the GAMA model
-GAMA_location_string = model_specifics["GAMA_location_string"][0] #"/home/daan/GAMA" # the location of GAMA main folder
-experiment_name = model_specifics["experiment_name"][0] #"simple_simulation" # experiment name as defined in the .gaml file
-stopping_condition = model_specifics["stopping_condition"][0] #"cycle=10" # stopping condition (> or < do not work)
+# Parse model specific setup parametres and set to variables
+model_specifics = pd.read_csv("model_specifics.csv",index_col="Unnamed: 0") 
+model_location_string = model_specifics["model_location_string"][0]
+GAMA_location_string = model_specifics["GAMA_location_string"][0] 
+experiment_name = model_specifics["experiment_name"][0] 
+stopping_condition = model_specifics["stopping_condition"][0] 
 
 # Define general variables
 outputdir = "results" # where to temporarily store the output xml files
 
-
-
-
-# # make a list of names of parameters representing policy options
-# policy_names = ["capacity_policy",
-#                 "minfood_access_policy",
-#                 "maxfood_access_policy",
-#                 "day_access_policy",
-#                 "rerouting_policy"]
-# # state the policy options
-# capacity_policy         = [0,1]
-# minfood_access_policy   = [0,1]
-# maxfood_access_policy   = [0,1,2]
-# day_access_policy       = [0,1]
-# rerouting_policy        = [0,1,2,3]
-# # permutate the policy options
-# res = [[i, j, k, l , m]  for i in capacity_policy
-#                          for j in minfood_access_policy
-#                          for k in maxfood_access_policy
-#                          for l in day_access_policy
-#                          for m in rerouting_policy]
-
-# # Add one scenario to permutation
-# uncertainty_dictionary = {}
-# uncertainty_dictionary["normal"] = [0.5,0.5,3.0,0.5] # alpha,beta,gamma,epsilon
-# parameter_values = list()
-# for u in uncertainty_dictionary:
-#     for p in res:
-#         parameter_values.append(p+uncertainty_dictionary[u])
-
-# # Add scenario factor names to list of parameters
-# uncertainty_names = ["alpha","beta","gamma","epsilon"]
-# parameter_names = policy_names+uncertainty_names
-
+# Read input parameters from .csv file, generated in a Notebook
 input_parameters = pd.read_csv("input_parameters.csv",index_col="Unnamed: 0")
 
-# # List the names of the desired output
-# output_names = [ "unsatisfied consumption",
-#                  "food degraded",
-#             	 "Queue length 0",
-#                  "Queue length 1",
-#             	 "Queue length 2",
-#             	 "Queue length 3",
-#             	 "Queue length 4",
-#             	 "Queue length 5",
-#             	 "Queue length 6",
-#             	 "Queue length 7",
-#             	 "Queue length 8",
-#             	 "Queue length 9",
-#             	 "Queue length 10",
-#             	 "Queue length 11"]
-
+# Read output names from .csv file, generated in a Notebook
 output_names_import = pd.read_csv("output_names.csv",index_col="Unnamed: 0")
 output_names = list()
 for o in range(len(output_names_import)):
     output_names.append(output_names_import.iloc[o,0])
-# Now we want to distribute the permutation over the threads
+    
+# Dictionary to store model output per thread
+sendbufdict = {}
 
-
-# Store the
-sendbufdict={}
+# Dictionary to store model output on root thread; a collection of sendbufdicts 
 recvbufdict = {}
 
-one_thread_loop_size = 2 #int(np.ceil(len(input_parameters)/size))
+# Max number of model runs per thread 
+one_thread_loop_size = int(np.ceil(len(input_parameters)/size))
 
 for stl in range(one_thread_loop_size):
     index = stl + rank*one_thread_loop_size
-    #stl = 0
+    print("Working on index number ",index, " of ",len(input_parameters))
 
-    if index < len(input_parameters):
+    if index < len(input_parameters): # Index not exceeding the length of input parameters
 
-        one_parameter_values = np.array(input_parameters.iloc[index,:]) #parameter_values[index]
-        parameter_names = input_parameters.columns
+        one_parameter_values = np.array(input_parameters.iloc[index,:]) # List of parametres for one run 
+        parameter_names = input_parameters.columns # List of parameter names
 
+        # Generate temporary input .XML file
         tempfile_location_string = create_input_XML(index,
                                                     parameter_names,
                                                     one_parameter_values,
@@ -107,10 +59,10 @@ for stl in range(one_thread_loop_size):
                                                     model_location_string,
                                                     GAMA_location_string)
 
-
+        # Generate temporary output .xml file
         output_location_string = run_model(index,tempfile_location_string,GAMA_location_string,outputdir)
 
-
+        # Parse and delete temporary output file
         one_outputs = parse_output_XML( unique_simulation_id = index,
                                         output_location_string = output_location_string,
                                         output_names = output_names)
@@ -129,9 +81,11 @@ for stl in range(one_thread_loop_size):
     else:
         pass
 
+# Collect thread-wise output storage from sendbufdict to recvbufdict
 for i in sendbufdict:
     comm.Gather(sendbufdict[i],recvbufdict[i],root=0)
 
+# Export recvbufdict to Feather file from the root thread 
 if rank == 0:
-    print(recvbufdict)
+    print("Exporting...")
     pd.DataFrame(recvbufdict).to_feather("results/"+experiment_name)
