@@ -15,46 +15,4 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>msi.gama.application.gamaNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>external/2217.shp</name>
-			<type>1</type>
-			<location>/home/daan/Documents/input_files/building_polygons/filtered/2217.shp</location>
-		</link>
-		<link>
-			<name>external/all_zones.shp</name>
-			<type>1</type>
-			<location>/home/daan/Documents/input_files/building_polygons/all_zones.shp</location>
-		</link>
-		<link>
-			<name>external/gdf_0f.shp</name>
-			<type>1</type>
-			<location>/home/daan/Documents/FATM_opt/save_files/gdf_0f/gdf_0f.shp</location>
-		</link>
-		<link>
-			<name>external/gdf_0f_b.shp</name>
-			<type>1</type>
-			<location>/home/daan/Documents/FATM_opt/save_files/gdf_0f/gdf_0f_b.shp</location>
-		</link>
-		<link>
-			<name>external/outcomes_avg_es.csv</name>
-			<type>1</type>
-			<location>/home/daan/GAMA/workspace/results/scaling_2k/outcomes_avg_es.csv</location>
-		</link>
-		<link>
-			<name>external/outcomes_input.csv</name>
-			<type>1</type>
-			<location>/home/daan/GAMA/workspace/results/scaling_2k/outcomes_input.csv</location>
-		</link>
-		<link>
-			<name>external/outcomes_ql.csv</name>
-			<type>1</type>
-			<location>/home/daan/GAMA/workspace/results/scaling_2k/outcomes_ql.csv</location>
-		</link>
-		<link>
-			<name>external/outcomes_sum_uc.csv</name>
-			<type>1</type>
-			<location>/home/daan/GAMA/workspace/results/scaling_2k/outcomes_sum_uc.csv</location>
-		</link>
-	</linkedResources>
 </projectDescription>
