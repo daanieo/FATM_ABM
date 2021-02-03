@@ -47,7 +47,7 @@ global {
 
 //	Experiment-variable and potential vital variable
 	int nb_households <- round(2500/scaling_factor);
-	float parallel_served_full <- 5.0;
+	float parallel_served_full <- 3.0;
 	int avg_interactions <- 5;
 	
 	float alpha <- 0.5;
