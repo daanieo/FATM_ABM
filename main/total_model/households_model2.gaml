@@ -287,6 +287,10 @@ species households skills:[moving] {
 			do forget;
 			
 			facility_of_choice<-my_facility;
+			
+			if current_date.day = 30{
+				remaining_ration<-ration*nb_members;
+			}
 		}
 		
 	
