@@ -92,6 +92,7 @@ global {
 //			Initialise statistics
 			food_served <- 0.0;
 			nb_served <-0;
+			
 		}
 		
 //		Create household agents
@@ -135,6 +136,7 @@ global {
 			unsatisfied_consumption <- 0.0;
 			time_queued <- 0.0;
 			distance_covered <- 0.0;
+			food_consumed <- 0.0;
 			
 
 		
@@ -220,12 +222,11 @@ experiment simple_simulation keep_seed: true type: gui until: (cycle>(30*cycles_
 	monitor "Queue length 10" value: length(facilities[10].queue);
 	monitor "Queue length 11" value: length(facilities[11].queue);
 	
-	monitor "avg es" value: households mean_of each.emotional_state;
+//	monitor "avg es" value: households mean_of each.emotional_state;
 	monitor "unsatisfied consumption" value: households sum_of each.unsatisfied_consumption;
-	
-	monitor "average serving size" value: (facilities sum_of each.food_served) / (facilities sum_of each.nb_served);
-	
+	monitor "distance covered" value: households sum_of each.distance_covered;  
 	monitor "food degraded" value: households sum_of each.degraded_food;
+	monitor "food consumed" value: households sum_of each.food_consumed;
 		
 	}
 }

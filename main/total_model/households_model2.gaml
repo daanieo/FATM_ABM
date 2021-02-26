@@ -44,6 +44,8 @@ species households skills:[moving] {
 	float emotional_state;
 	int emotional_timestamp;
 	date queue_timestamp;
+	
+	
 	float unsatisfied_consumption;
 	float degraded_food;
 	
@@ -55,6 +57,7 @@ species households skills:[moving] {
 	
 	float distance_covered;
 	float time_queued;
+	float food_consumed;
 	
 //	Function to visualise
 	aspect map_visualisation {	
@@ -95,12 +98,14 @@ species households skills:[moving] {
 	action consume_food { 													// Function consuming food/being hungry			
 		if food_storage < (nb_members * ration/30) {					// if foood storage is smaller than amount needed
 			
+			food_consumed <- food_consumed + (nb_members*ration/30 - food_storage);
 			unsatisfied_consumption <- unsatisfied_consumption + (nb_members*ration/30 - food_storage);
 			food_storage<-0.0; 		
 										
 				
 		} else {															// if food storage is sufficient
 			food_storage <- food_storage - nb_members * ration/30; 	// update food storage minus consumption 
+			food_consumed <- food_consumed + nb_members * ration/30;
 			}
 		}
 		
