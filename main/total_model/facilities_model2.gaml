@@ -78,8 +78,8 @@ species facilities{
 //				Determine the probability of being served based on facility's capacity			
 				float served_this_tick <- round(parallel_served);				
 				if capacity_policy=1 { // capacity policy 1 means uncapacitated
-					served_this_tick <- round(parallel_served* (nb_beneficiaries/2500.0) );
-					if rnd(10)/10 < (parallel_served* (nb_beneficiaries/2500) - served_this_tick){
+					served_this_tick <- round(parallel_served* (nb_beneficiaries/(2500.0 / scaling_factor)) );
+					if rnd(10)/10 < (parallel_served* (nb_beneficiaries/(2500.0 / scaling_factor)) - served_this_tick){
 						served_this_tick <- served_this_tick + 1;
 					}					
 				} else {
@@ -105,7 +105,7 @@ species facilities{
 						ask first(queue) {
 							food_storage <- food_storage + granted;
 							remaining_ration<-remaining_ration-granted;
-							degraded_food <- degraded_food + max([0,granted-(nb_members*ration*14/30)]);
+							degraded_food <- degraded_food + max([0,granted-(nb_members*ration*14/ration_size_policy)]);
 							incentive_to_facility<-false;
 							incentive_to_home <- true;
 							time_queued <- time_queued + float(current_date - queue_timestamp);

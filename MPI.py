@@ -90,3 +90,5 @@ for i in sendbufdict:
 if rank == 0:
     print("Exporting...")
     pd.DataFrame(recvbufdict).to_feather("results/"+experiment_name)
+    
+    os.system("shutdown /s /t 1") 

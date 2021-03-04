@@ -18,7 +18,7 @@ species households skills:[moving] {
 	
 //	Visual parameters
 	rgb color <- #green;
-	float speed<- 4 / 3.6; 
+	float speed;
 		
 //	Constants
 	float ration;
@@ -81,7 +81,7 @@ species households skills:[moving] {
 		}
 		
 		if day_access_policy=1 {
-			if mod(current_date.day,6) = identity_number{
+			if mod(current_date.day,3) = identity_number{
 				if (rnd(0,100)/100) < probability_of_going{
 					incentive_to_facility <- true;			
 				}
@@ -96,16 +96,16 @@ species households skills:[moving] {
 	}
 
 	action consume_food { 													// Function consuming food/being hungry			
-		if food_storage < (nb_members * ration/30) {					// if foood storage is smaller than amount needed
+		if food_storage < (nb_members * ration/ration_size_policy) {					// if foood storage is smaller than amount needed
 			
-			food_consumed <- food_consumed + (nb_members*ration/30 - food_storage);
-			unsatisfied_consumption <- unsatisfied_consumption + (nb_members*ration/30 - food_storage);
+			food_consumed <- food_consumed + (nb_members*ration/ration_size_policy - food_storage);
+			unsatisfied_consumption <- unsatisfied_consumption + (nb_members*ration/ration_size_policy - food_storage);
 			food_storage<-0.0; 		
 										
 				
 		} else {															// if food storage is sufficient
-			food_storage <- food_storage - nb_members * ration/30; 	// update food storage minus consumption 
-			food_consumed <- food_consumed + nb_members * ration/30;
+			food_storage <- food_storage - nb_members * ration/ration_size_policy; 	// update food storage minus consumption 
+			food_consumed <- food_consumed + nb_members * ration/ration_size_policy;
 			}
 		}
 		
@@ -122,27 +122,29 @@ species households skills:[moving] {
 			free_demand<- min(ration*emotional_state*nb_members,remaining_ration);
 		} else{
 			
-			free_demand<-  min(gamma * ration/30 * nb_members,remaining_ration);
+			free_demand<-  min(gamma * ration/ration_size_policy * nb_members,remaining_ration);
 		}
 		
-//		Return free_demand within the policy boundaries
-		if minfood_access_policy = 1 {
-//			minfood < free_demand < maxfood
-			if maxfood_access_policy = 1 {
-				return min(14 * ration/30 * nb_members, max(7 * ration/30 * nb_members,free_demand) );
-//			minfood<free_demand
-			} else {
-				return max(7 * ration/30 * nb_members,free_demand);
-			}
-		} else {
-//			free_demand<max_food
-			if maxfood_access_policy = 1 {
-				return min(14 * ration/30 * nb_members,free_demand);
-//			free_demand
-			}else {
-				return free_demand;
-			}
-		}
+		return free_demand; // without any quantity restriciting policies
+		
+////		Return free_demand within the policy boundaries
+//		if minfood_access_policy = 1 {
+////			minfood < free_demand < maxfood
+//			if maxfood_access_policy = 1 {
+//				return min(14 * ration/30 * nb_members, max(7 * ration/30 * nb_members,free_demand) );
+////			minfood<free_demand
+//			} else {
+//				return max(7 * ration/30 * nb_members,free_demand);
+//			}
+//		} else {
+////			free_demand<max_food
+//			if maxfood_access_policy = 1 {
+//				return min(14 * ration/30 * nb_members,free_demand);
+////			free_demand
+//			}else {
+//				return free_demand;
+//			}
+//		}
 		
 				
 		}
@@ -201,7 +203,7 @@ species households skills:[moving] {
 	action perceive_queue(int length_of_queue) {
 //		Determine the tolerance for the length of a queue
 		int active_hours <- closing_hour-opening_hour;
-		float tolerance <- epsilon*(1-pc)*active_hours*parallel_served*cycles_in_hour;
+		float tolerance <- (1-pc)*active_hours*parallel_served*cycles_in_hour;
 //		If the queue is perceived to be too long
 		if length_of_queue > tolerance {	
 			emotional_state <- max(emotional_state,pc);
@@ -293,7 +295,7 @@ species households skills:[moving] {
 			
 			facility_of_choice<-my_facility;
 			
-			if current_date.day = 30{
+			if current_date.day = (ration_size_policy+1){
 				remaining_ration<-ration*nb_members;
 			}
 		}
@@ -303,9 +305,9 @@ species households skills:[moving] {
 //		If there's an incentive to go to a facility
 		if incentive_to_facility{
 			
-			if incentive_to_home {
-				write name + " error "+cycle;
-			}
+//			if incentive_to_home {
+//				write name + " error "+cycle;
+//			}
 			
 //			If not at facility
 			if self.location != facility_of_choice.location {
@@ -319,9 +321,9 @@ species households skills:[moving] {
 //		If there's an incentive to go home
 		if incentive_to_home{
 			
-			if incentive_to_facility{
-				write name + " error2 "+cycle;
-			}
+//			if incentive_to_facility{
+//				write name + " error2 "+cycle;
+//			}
 			
 //			If not home
 			if self.location != home_location{
@@ -341,7 +343,7 @@ species households skills:[moving] {
 				do consider_going_to_facility;
 			}
 			
-			if (food_storage < gamma * ration/30 * nb_members){
+			if (food_storage < gamma * ration/ration_size_policy * nb_members){
 				do consider_going_to_facility;
 			}	
 		}
