@@ -232,6 +232,21 @@ experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 	monitor "Queue length 10" value: length(facilities[10].queue);
 	monitor "Queue length 11" value: length(facilities[11].queue);
 	
+	monitor "Food served 0" value: facilities[0].food_served;
+	monitor "Food served 1" value: facilities[1].food_served;
+	monitor "Food served 2" value: facilities[2].food_served;
+	monitor "Food served 3" value: facilities[3].food_served;
+	monitor "Food served 4" value: facilities[4].food_served;
+	monitor "Food served 5" value: facilities[5].food_served;
+	monitor "Food served 6" value: facilities[6].food_served;
+	monitor "Food served 7" value: facilities[7].food_served;
+	monitor "Food served 8" value: facilities[8].food_served;
+	monitor "Food served 9" value: facilities[9].food_served;
+	monitor "Food served 10" value: facilities[10].food_served;
+	monitor "Food served 11" value: facilities[11].food_served;
+
+
+	
 //	monitor "avg es" value: households mean_of each.emotional_state;
 	monitor "unsatisfied consumption" value: households sum_of each.unsatisfied_consumption;
 	monitor "distance covered" value: households sum_of each.distance_covered;  
