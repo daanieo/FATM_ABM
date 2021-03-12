@@ -64,11 +64,13 @@ def run_model(unique_simulation_id,
 
     outputdir = "/tmp"
     #call gama
-    os.system(launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
-
-    # delete input xml
-    bash_string = "rm %s"%tempfile_location_string
-    os.system(bash_string)
+    a=os.system(launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
+    print("Return value is ",a)
+    print("$$",launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
+    #
+    # # delete input xml
+    # bash_string = "rm %s"%tempfile_location_string
+    # os.system(bash_string)
 
     return outputdir+"/"+ "simulation-outputs%s.xml"%unique_simulation_id
 

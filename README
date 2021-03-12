@@ -4,4 +4,11 @@ MPI logic can be found in MPI.py
 
 RUN MPI from bash with np being the number of threads:
 
-$ mpiexec python -np 4 MPI.py
+$ mpiexec -np 4 python MPI.py
+
+Required packages: 
+lxml 
+pandas
+numpy 
+mpi4py
+tempfile
