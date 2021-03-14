@@ -6,6 +6,9 @@ RUN MPI from bash with np being the number of threads:
 
 $ mpiexec -np 4 python MPI.py
 
+Important:
+Change JAVA Runtime version to version 8
+
 Required packages: 
 lxml 
 pandas
