@@ -40,23 +40,26 @@ global {
 	
 	geometry shape <-envelope(shape_file_buildings);
 	
-	int scaling_factor <- 15;
 //	int scaling_factor <- 11; 
 //	int scaling_factor <- 5;
 //	int scaling_factor <- 1;
 
 //	Experiment-variable and potential vital variable
-	int nb_households <- round(2500/scaling_factor);
+	int scaling_factor <- 15;
+	int default_nb_households <- 2500;
+	int nb_households <- round(default_nb_households/scaling_factor);
+	int avg_hh_size<-7;
+
 	float parallel_served_full <- 3.0;
+	float parallel_served <- parallel_served_full/scaling_factor;
+
 	int avg_interactions <- 5;
-	
+		
 	float alpha <- 0.5;
 	float beta <- 0.5;
 	float gamma <- 7.0;
 	float epsilon <- 0.5;  
 	
-	float parallel_served <- parallel_served_full/scaling_factor;
-	int avg_hh_size<-7;
 	
 	float avg_food_consumption <- 0.5; // food consumption per person per day
 	int food_preservation_days <- 14; // the number of days 
