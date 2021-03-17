@@ -57,6 +57,10 @@ global {
 	
 	float parallel_served <- parallel_served_full/scaling_factor;
 	int avg_hh_size<-7;
+	
+	float avg_food_consumption <- 0.5; // food consumption per person per day
+	int food_preservation_days <- 14; // the number of days 
+	float avg_degradation_portion <- 1.0; // the average portion of food subject to degradation that actually rots
 		
 //	Time-related constants
 	date starting_date <- date("2021-01-01 00:00:00");	
@@ -100,7 +104,7 @@ global {
 		create households from: shape_file_buildings{
 
 //			Policy-dependent variables			
-			ration <- ration_size_policy / 2;
+			ration <- ration_size_policy*avg_food_consumption;
 			
 			if capacity_policy = 2 {
 				my_facility <- one_of(facilities);
@@ -128,21 +132,21 @@ global {
 			remaining_ration<-ration*nb_members;
 			
 			if day_access_policy = 1 {
-				food_storage <- ration/ration_size_policy * gamma * nb_members + identity_number*nb_members*ration/ration_size_policy;			// initial food storage 
+				food_storage <- avg_food_consumption * nb_members + identity_number*nb_members*avg_food_consumption;			// initial food storage 
 			} else {
-				food_storage <- ration/ration_size_policy * gamma * nb_members + rnd(0,gamma)*nb_members*ration/ration_size_policy;			// initial food storage 
+				food_storage <- avg_food_consumption * nb_members * (gamma + rnd(0,gamma));			// initial food storage 
 			}
 			
 			emotional_state <- 0.0;
 			emotional_timestamp <- 0;
 			facility_of_choice <- my_facility;	// initally facility of choice is my facility 
-			degraded_food <- 0.0;
 			
 //			States			
 			incentive_to_facility <- false;
 			incentive_to_home <- false;
 				
 //			Initialise statistics	
+			degraded_food <- 0.0;
 			unsatisfied_consumption <- 0.0;
 			time_queued <- 0.0;
 			distance_covered <- 0.0;
@@ -154,10 +158,10 @@ global {
 	}
 	
 	reflex t {
-		
-		add (households sum_of each.unsatisfied_consumption) to: sum_uc;
-		add (households mean_of each.emotional_state) to: avg_es;
-		add (households sum_of each.degraded_food) to: sum_fd;
+//		
+//		add (households sum_of each.unsatisfied_consumption) to: sum_uc;
+//		add (households mean_of each.emotional_state) to: avg_es;
+//		add (households sum_of each.degraded_food) to: sum_fd;
 		
 	}
 	

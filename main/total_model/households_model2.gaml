@@ -96,16 +96,16 @@ species households skills:[moving] {
 	}
 
 	action consume_food { 													// Function consuming food/being hungry			
-		if food_storage < (nb_members * ration/ration_size_policy) {					// if foood storage is smaller than amount needed
+		if food_storage < (nb_members * 0.5) {					// if foood storage is smaller than amount needed
 			
-			food_consumed <- food_consumed + (nb_members*ration/ration_size_policy - food_storage);
-			unsatisfied_consumption <- unsatisfied_consumption + (nb_members*ration/ration_size_policy - food_storage);
+			food_consumed <- food_consumed + (nb_members*avg_food_consumption - food_storage);
+			unsatisfied_consumption <- unsatisfied_consumption + (nb_members*avg_food_consumption - food_storage);
 			food_storage<-0.0; 		
 										
 				
 		} else {															// if food storage is sufficient
-			food_storage <- food_storage - nb_members * ration/ration_size_policy; 	// update food storage minus consumption 
-			food_consumed <- food_consumed + nb_members * ration/ration_size_policy;
+			food_storage <- food_storage - nb_members * avg_food_consumption; 	// update food storage minus consumption 
+			food_consumed <- food_consumed + nb_members * avg_food_consumption;
 			}
 		}
 		
@@ -116,13 +116,14 @@ species households skills:[moving] {
 
 //		Formulate what demand would be without policy intervention
 		float free_demand <- 0.0; 
+		
 						
 		if emotional_state>=infected_threshold {
 	
 			free_demand<- min(ration*emotional_state*nb_members,remaining_ration);
 		} else{
 			
-			free_demand<-  min(gamma * ration/ration_size_policy * nb_members,remaining_ration);
+			free_demand<-  min(gamma * avg_food_consumption * nb_members,remaining_ration);
 		}
 		
 		return free_demand; // without any quantity restriciting policies
@@ -296,6 +297,7 @@ species households skills:[moving] {
 			facility_of_choice<-my_facility;
 			
 			if current_date.day = (ration_size_policy+1){
+				write"refill ration";
 				remaining_ration<-ration*nb_members;
 			}
 		}
@@ -343,7 +345,7 @@ species households skills:[moving] {
 				do consider_going_to_facility;
 			}
 			
-			if (food_storage < gamma * ration/ration_size_policy * nb_members){
+			if (food_storage < gamma * 0.5 * nb_members){
 				do consider_going_to_facility;
 			}	
 		}

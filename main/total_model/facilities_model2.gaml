@@ -97,15 +97,17 @@ species facilities{
 					} else{
 						
 //						Determine demand and update facility variables										
-						float food_demanded <- first(queue).determine_demand();						
+						float food_demanded <- first(queue).determine_demand();	
 						float granted <- food_demanded;							
 						facility_food_storage <- facility_food_storage - granted;
 						
 //						Update households variables
 						ask first(queue) {
+//							write "Food granted: "+granted+" while "+food_storage+" in storage for "+nb_members+" members and degraded food increases with "+max(0,(granted+food_storage)-(nb_members*0.5*14));
+							degraded_food <- degraded_food + max(0,(granted+food_storage)-(nb_members*avg_food_consumption*food_preservation_days)) * avg_degradation_portion;
 							food_storage <- food_storage + granted;
 							remaining_ration<-remaining_ration-granted;
-							degraded_food <- degraded_food + max([0,granted-(nb_members*ration*14/ration_size_policy)]);
+							
 							incentive_to_facility<-false;
 							incentive_to_home <- true;
 							time_queued <- time_queued + float(current_date - queue_timestamp);
