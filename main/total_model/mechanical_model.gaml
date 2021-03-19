@@ -129,7 +129,7 @@ global {
 			pc<- rnd(0,100*epsilon)/100; 						// personal characteristic varying between 0 and 1
 			home_location <- location;				// home location = current location 
 			
-			my_facility.nb_beneficiaries <- my_facility.nb_beneficiaries + 1;
+//			my_facility.nb_beneficiaries <- my_facility.nb_beneficiaries + 1;
 			
 //			Variables
 			remaining_ration<-ration*nb_members;
