@@ -47,7 +47,7 @@ global {
 //	Experiment-variable and potential vital variable
 	int scaling_factor <- 15;
 	int default_nb_households <- 2500;
-	int nb_households <- round(default_nb_households/scaling_factor);
+	int nb_households <- 2305;
 	int avg_hh_size<-7;
 
 	float parallel_served_full <- 3.0;
@@ -89,7 +89,7 @@ global {
 	init {		
 
 //		Create facility agents
-		create facilities from: shape_file_facilities with: [nb_beneficiaries::read ("size"), facility_id::read("fatm_id")] { 
+		create facilities from: shape_file_facilities with: [facility_id::read("fatm_id")] { 
 									
 //			Assign empties to variables 
 			queue <- [];
@@ -100,6 +100,8 @@ global {
 //			Initialise statistics
 			food_served <- 0.0;
 			nb_served <-0;
+			
+			nb_beneficiaries <- 0.0;
 			
 		}
 		
@@ -115,6 +117,7 @@ global {
 				my_facility <- determine_facility();	// home facility is current closest facility 
 			}
 			
+			my_facility.nb_beneficiaries <- my_facility.nb_beneficiaries + 1;			
 			
 //			Constants
 			infected_threshold <- 0.5;				// threshold to changing the agent to be "infected"
@@ -209,22 +212,26 @@ experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 	
 //	Graphs for household agents	
 	display beneficiaries {
-       	chart "avg es" type: series y_label: "kg rice" y_range:[-0.1,1] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
-        data "average emotional state" value: households mean_of each.emotional_state;
-    }    
-    	chart "summed food storage of household" type: series y_label: "summed food" y_range:[0,315000] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0,0.5} {
-    		data "summed food" value: households sum_of each.food_storage;
-    	}
+		
+       	chart "distance" type: series y_label: "km" y_range:[0,100000] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
+			data "distance covered" value: households sum_of each.distance_covered;
+		}
+//       	chart "avg es" type: series y_label: "kg rice" y_range:[-0.1,1] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
+//        data "average emotional state" value: households mean_of each.emotional_state;
+//    }    
+//    	chart "summed food storage of household" type: series y_label: "summed food" y_range:[0,315000] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0,0.5} {
+//    		data "summed food" value: households sum_of each.food_storage;
+//    	}
 	}
 	
-//	Graphs for facility agents
-	display facilities {
-       	chart "Facilities queue lengths" type: series y_label: "# people" y_range:[0,2500] x_range: [cycle-1000,cycle+1000] size: {1.0,1} position: {0, 0} {
-        loop f over: facilities {
-    		data f.name value: length(f.queue);
-		}
-    }
-	}
+////	Graphs for facility agents
+//	display facilities {
+//       	chart "Facilities queue lengths" type: series y_label: "# people" y_range:[0,2500] x_range: [cycle-1000,cycle+1000] size: {1.0,1} position: {0, 0} {
+//        loop f over: facilities {
+//    		data f.name value: length(f.queue);
+//		}
+//    }
+//	}
 	
 	monitor "Queue length 0" value: length(facilities[0].queue);
 	monitor "Queue length 1" value: length(facilities[1].queue);

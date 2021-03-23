@@ -76,10 +76,11 @@ species facilities{
 			if (opening_hour <= current_date.hour and current_date.hour <= closing_hour) or  (opening_hour <= current_date.hour and extended_service){
 
 //				Determine the probability of being served based on facility's capacity			
-				float served_this_tick <- round(parallel_served);				
+				float served_this_tick <- round(parallel_served);	
 				if capacity_policy=1 { // capacity policy 1 means uncapacitated
-					served_this_tick <- round(parallel_served* (nb_beneficiaries/(2500.0 / scaling_factor)) );
-					if rnd(10)/10 < (parallel_served* (nb_beneficiaries/(2500.0 / scaling_factor)) - served_this_tick){
+					float ps <- nb_beneficiaries / (2500.0/scaling_factor) * parallel_served;
+					served_this_tick <- round(ps);
+					if rnd(10)/10 < (ps - served_this_tick) {
 						served_this_tick <- served_this_tick + 1;
 					}					
 				} else {
@@ -88,7 +89,6 @@ species facilities{
 					}					
 				}
 				
-
 //				Loop n times, serving people in the queue
 				loop times: served_this_tick { 
 					

@@ -190,13 +190,13 @@ species households skills:[moving] {
 
 //	Send the agent to the preferred facility
 	action go_facility{								// Function sending to facility
-		distance_covered <- distance_covered + speed / cycles_in_hour;
+		distance_covered <- distance_covered + speed*3.6 / cycles_in_hour;
 		do goto(facility_of_choice) speed: speed;	// go to facility with speed
 	}
 	
 //	Sends the agent home
 	action go_home {								// Function sending to home
-		distance_covered <- distance_covered + speed / cycles_in_hour;
+		distance_covered <- distance_covered + speed*3.6 / cycles_in_hour;
 		do goto(home_location) speed: speed;		// go to home with speed
 		}
 
@@ -224,7 +224,10 @@ species households skills:[moving] {
 		
 //		Choose a random facility to spread demand
 		if rerouting_policy=2 {
-			if facility_of_choice != my_facility{
+			
+			bool in_service <- opening_hour <= current_date.hour and current_date.hour < closing_hour;
+			
+			if facility_of_choice != my_facility or in_service = false{
 				incentive_to_facility<-false;
 				incentive_to_home<-true;
 				emotional_state <- max(emotional_state,pc);
@@ -237,7 +240,9 @@ species households skills:[moving] {
 //		Determine another facility as the closest
 		if rerouting_policy=3 {
 			
-			if facility_of_choice != my_facility{
+			bool in_service <- opening_hour <= current_date.hour and current_date.hour < closing_hour;
+			
+			if facility_of_choice != my_facility or in_service = false{
 				incentive_to_facility<-false;
 				incentive_to_home<-true;
 				emotional_state<-max(emotional_state,pc);
@@ -297,11 +302,14 @@ species households skills:[moving] {
 			facility_of_choice<-my_facility;
 			
 			if current_date.day = (ration_size_policy+1){
-				write"refill ration";
 				remaining_ration<-ration*nb_members;
 			}
 		}
 		
+		if go_sleep = current_date.hour {
+			incentive_to_facility <- false;
+			incentive_to_home <- true; 
+		}
 	
 		
 //		If there's an incentive to go to a facility
@@ -316,6 +324,7 @@ species households skills:[moving] {
 				do go_facility;
 //			If at facility
 			} else {
+				
 				do enter_queue;
 			}			
 		}
@@ -326,7 +335,7 @@ species households skills:[moving] {
 //			if incentive_to_facility{
 //				write name + " error2 "+cycle;
 //			}
-			
+//			
 //			If not home
 			if self.location != home_location{
 				do go_home;
