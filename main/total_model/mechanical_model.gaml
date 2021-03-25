@@ -19,6 +19,7 @@ global {
 //	list<string> maxfood_access_policies <- ["base","maxfood","twoweekration"]; 		// hh -> determine demand
 //	list<string> day_access_policies <- ["base","tar"]; 								// hh -> consider_facility; init 
 //	list<string> rerouting_policies <- ["base_base","base_managed","spread","closest"]; // queue open ; hh -> reroute 
+
 	
 //	Model structure
 	int capacity_policy <- 0;
@@ -107,6 +108,7 @@ global {
 		
 //		Create household agents
 		create households from: shape_file_buildings{
+			
 
 //			Policy-dependent variables			
 			ration <- ration_size_policy*avg_food_consumption;
@@ -116,6 +118,9 @@ global {
 			} else {
 				my_facility <- determine_facility();	// home facility is current closest facility 
 			}
+			
+			dist_to_fac <- distance_to(location,my_facility.location); 
+			
 			
 			my_facility.nb_beneficiaries <- my_facility.nb_beneficiaries + 1;			
 			
@@ -164,6 +169,7 @@ global {
 	}
 	
 	reflex t {
+		
 //		
 //		add (households sum_of each.unsatisfied_consumption) to: sum_uc;
 //		add (households mean_of each.emotional_state) to: avg_es;
@@ -182,7 +188,7 @@ global {
 experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 	
 //	Model structure
-	parameter "capacity policies" var: capacity_policy min: 0 max: 1 step: 1; 
+	parameter "capacity policies" var: capacity_policy min: 0 max: 2 step: 1; 
 	parameter "min food policies" var: minfood_access_policy min: 0 max: 1 step: 1; 
 	parameter "max food policies" var: ration_size_policy min: 15 max: 30 step: 15;
 	parameter "day access policies" var: day_access_policy min: 0 max: 0 step: 1; 

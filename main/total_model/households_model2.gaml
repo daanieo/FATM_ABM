@@ -16,6 +16,8 @@ import "mechanical_model.gaml"
 
 species households skills:[moving] {
 	
+	float dist_to_fac; 
+	
 //	Visual parameters
 	rgb color <- #green;
 	float speed;
