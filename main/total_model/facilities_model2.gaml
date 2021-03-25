@@ -65,7 +65,12 @@ species facilities{
 		
 		
 		if current_date.hour = 0  and current_date.minute = 0{ 		// every day 
-			facility_food_storage <- facility_food_storage_size; 	// refill storage up to max capacity
+			if capacity_policy = 1{
+				facility_food_storage <- facility_food_storage_size * nb_beneficiaries / (2500.0/scaling_factor);
+			} else {
+				facility_food_storage <- facility_food_storage_size;
+			}
+//			facility_food_storage <- facility_food_storage_size; 	// refill storage up to max capacity
 			queue_open <- true;					// (re-)open queue
 		}
 		
@@ -119,7 +124,7 @@ species facilities{
 				}
 				
 //				If the cycles is outside opening hours
-				} if current_date.hour > closing_hour {
+				} if current_date.hour > closing_hour or facility_food_storage <= 0 {
 					loop while: length(queue)>0{
 						
 						ask first(queue) {

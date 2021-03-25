@@ -95,7 +95,7 @@ global {
 //			Assign empties to variables 
 			queue <- [];
 			queue_open<-true;
-			facility_food_storage_size <- nb_beneficiaries*15/scaling_factor;
+			facility_food_storage_size <- 15000 * 5/scaling_factor;
 			facility_food_storage <- facility_food_storage_size; //nb_households*15/scaling_factor; // At initialisation, food storage has max capacity 
 			
 //			Initialise statistics
@@ -123,6 +123,8 @@ global {
 			
 			
 			my_facility.nb_beneficiaries <- my_facility.nb_beneficiaries + 1;			
+			
+
 			
 //			Constants
 			infected_threshold <- 0.5;				// threshold to changing the agent to be "infected"
@@ -170,7 +172,6 @@ global {
 	
 	reflex t {
 		
-//		
 //		add (households sum_of each.unsatisfied_consumption) to: sum_uc;
 //		add (households mean_of each.emotional_state) to: avg_es;
 //		add (households sum_of each.degraded_food) to: sum_fd;
@@ -219,8 +220,11 @@ experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 //	Graphs for household agents	
 	display beneficiaries {
 		
-       	chart "distance" type: series y_label: "km" y_range:[0,100000] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
+       	chart "distance" type: series y_label: "km" y_range:[0,100e3] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
 			data "distance covered" value: households sum_of each.distance_covered;
+		}
+       	chart "cum food in store" type: series y_label: "kg" y_range:[0,10e3] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0,0.5}{
+			data "distance covered" value: facilities[5].facility_food_storage; //facilities sum_of each.facility_food_storage;
 		}
 //       	chart "avg es" type: series y_label: "kg rice" y_range:[-0.1,1] x_range: [cycle-1000,cycle+1000] size: {1.0,0.5} position: {0, 0}{
 //        data "average emotional state" value: households mean_of each.emotional_state;
