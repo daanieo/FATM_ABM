@@ -63,8 +63,9 @@ species facilities{
 //	Reflexes
 	reflex check_queue {  
 		
+		if mod(current_date.day,facility_refill_frequency)=0 and current_date.hour = 0  and current_date.minute = 0{ 		// every day 
 		
-		if current_date.hour = 0  and current_date.minute = 0{ 		// every day 
+		
 			if capacity_policy = 1{
 				facility_food_storage <- facility_food_storage_size * nb_beneficiaries / (2500.0/scaling_factor);
 			} else {
@@ -97,7 +98,7 @@ species facilities{
 //				Loop n times, serving people in the queue
 				loop times: served_this_tick { 
 					
-					if length(queue)=0{ 			// stops if the queue is empty
+					if length(queue)=0 or facility_food_storage <=0{ 			// stops if the queue is 
 						break;
 					} else{
 						

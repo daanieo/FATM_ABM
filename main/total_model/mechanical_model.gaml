@@ -27,6 +27,8 @@ global {
 	int ration_size_policy <- 30;
 	int day_access_policy <- 0; 
 	int rerouting_policy <- 0; 
+	
+	int facility_refill_frequency <- 1;
 
 	bool extended_service <- false;	
 	bool breakdown_scenario <- false;
@@ -195,6 +197,8 @@ experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 	parameter "day access policies" var: day_access_policy min: 0 max: 0 step: 1; 
 	parameter "rerouting policies" var: rerouting_policy min: 0 max: 2 step: 1; 
 	
+	parameter "refill frequency" var: facility_refill_frequency min: 1 max: 7 step: 1;
+	
 	parameter "extended service hours" var: extended_service <- false;
 	parameter "breakdown scenario" var: breakdown_scenario <- false;
 	parameter "id of broken facility" var: broken_facility_id <- 8; 
@@ -276,6 +280,9 @@ experiment simple_simulation keep_seed: true type: gui   until: (cycle>4320){
 	monitor "distance covered" value: households sum_of each.distance_covered;  
 	monitor "food degraded" value: households sum_of each.degraded_food;
 	monitor "food consumed" value: households sum_of each.food_consumed;
+	
+	monitor "food storage" value: facilities sum_of each.facility_food_storage;
+	monitor "emotional state" value: households mean_of each.emotional_state;
 		
 	}
 }
