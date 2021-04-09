@@ -9,9 +9,18 @@ $ mpiexec -np 4 python MPI.py
 Important:
 Change JAVA Runtime version to version 8
 
-Required packages: 
-lxml 
-pandas
-numpy 
-mpi4py
-tempfile
+FATM Conda environment.
+-------------
+
+Result interpretation:
+- pandas
+- numpy 
+
+Specific to execution:
+- pandas 
+- numpy 
+- lxml
+- mpi4py
+- tempfile
+
+Optimisation:
