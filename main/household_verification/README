@@ -1,7 +1,0 @@
-Network matrices: 
-fully_matrix.csv
-sparsely_matrix.csv
-
-network_test.gaml w/ submodel households_model2.gaml
-
-household_test.gaml w/ submodel households_model.gaml
