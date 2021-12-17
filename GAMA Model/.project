@@ -15,4 +15,11 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>msi.gama.application.gamaNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>external/2217.shp</name>
+			<type>1</type>
+			<location>/home/daan/Documents/input_files/building_polygons/filtered/2217.shp</location>
+		</link>
+	</linkedResources>
 </projectDescription>
