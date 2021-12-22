@@ -59,14 +59,17 @@ def run_model(unique_simulation_id,
               GAMA_location_string,
               outputdir):
 
-    launcher_string = "java -cp %s/plugins/org.eclipse.equinox.launcher*.jar -Xms512m -Xmx2048m -Djava.awt.headless=true org.eclipse.core.launcher.Main -application msi.gama.headless.id4 %s %s"
+    launcher_string = "bash %s/headless/gama-headless.sh %s %s "#"/home/daan/Desktop/test.xml /home/daan/Desktop/
+    # launcher_string = "java -cp %s/plugins/org.eclipse.equinox.launcher*.jar -Xms512m -Xmx2048m -Djava.awt.headless=true org.eclipse.core.launcher.Main -application msi.gama.headless.id4 %s %s"
+
     # Everything % (gama location, input xml, output xml/dir)
 
     outputdir = "/tmp"
+
     #call gama
     a=os.system(launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
     print("Return value is ",a)
-    print("$$",launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
+    # print("$$",launcher_string%(GAMA_location_string,tempfile_location_string,outputdir))
     #
     # # delete input xml
     # bash_string = "rm %s"%tempfile_location_string

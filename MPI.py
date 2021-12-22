@@ -61,9 +61,10 @@ for stl in range(one_thread_loop_size):
                                                 model_location_string,
                                                 GAMA_location_string)
 
+
     # Generate temporary output .xml file
     output_location_string = run_model(index,tempfile_location_string,GAMA_location_string,outputdir)
-    print("UNTIL HERE")
+
     # Parse and delete temporary output file
     one_outputs = parse_output_XML( unique_simulation_id = index,
                                     output_location_string = output_location_string,
